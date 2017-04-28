@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IFreshmanProductDao">
+    <resultMap id="FreshmanProductResultMap" type="com.youxianji.pojo.ProdInfo" >
+	    <id column="prodid" property="prodid" jdbcType="VARCHAR" />
+    	<result column="prodname" property="prodname" jdbcType="VARCHAR" />
+    	<result column="sellPrice" property="sellPrice" jdbcType="DECIMAL" />
+    	<result column="valuePrice" property="valuePrice" jdbcType="DECIMAL" />
+   		<result column="typeid" property="typeid" jdbcType="VARCHAR" />
+    	<result column="prodstock" property="prodstock" jdbcType="INTEGER" />
+    	<result column="imageUrl" property="imageUrl" jdbcType="VARCHAR" />
+    	<result column="weight" property="weight" jdbcType="VARCHAR" />
+    	<result column="cpackage" property="cpackage" jdbcType="VARCHAR" />
+    	<result column="remark" property="remark" jdbcType="VARCHAR" />
+    	<result column="preSellTag" property="preSellTag" jdbcType="VARCHAR" />
+    	<result column="prodUnit" property="prodUnit" jdbcType="VARCHAR" />
+    	<result column="preSellTime" property="preSellTime" jdbcType="VARCHAR" />
+    	<result column="ishome" property="ishome" jdbcType="CHAR" />
+    	<result column="isfreshman" property="isfreshman" jdbcType="CHAR" />
+    	<result column="freshmanprice" property="freshmanprice" jdbcType="DECIMAL" />
+    	<result column="serialnumber" property="serialnumber" jdbcType="INTEGER" />
+    	<result column="isactivity" property="isactivity" jdbcType="CHAR" />
+    	<result column="proddesc" property="prodDesc" jdbcType="VARCHAR" />
+    	<association property="detailInfo" column="detailInfo" resultMap="DetailInfoResultMap"></association> 
+    	<association property="businessUser" column="businessUser" resultMap="BusinessUserResultMap"></association>
+  	</resultMap>
+  	
+  	 <resultMap id="DetailInfoResultMap" type="com.youxianji.pojo.ProdDetailInfo" >
+	       <id column="detailId" property="detailId" jdbcType="VARCHAR" />
+    	<result column="textString" property="textString" jdbcType="VARCHAR" />
+	 </resultMap>  
+	 
+	  <resultMap id="BusinessUserResultMap" type="com.youxianji.pojo.BusinessUserInfo" >
+	    <id column="buserId" property="buserId" jdbcType="VARCHAR" />
+	 </resultMap>   
+  	
+  	 <sql id="Base_Column_List" >
+           p.prodid, p.prodname, p.sellPrice, p.valuePrice, p.typeid, p.prodstock, p.imageUrl, p.weight, p.cpackage,
+           p.remark, p.preSellflag as preSellTag, p.prodUnit, p.preSellTime,p.buserId as businessUser,p.proddesc,p.isfreshman,p.freshmanprice
+	 </sql>
+	 
+	<select id="getFreshmanProductList" resultMap="FreshmanProductResultMap" parameterType="java.lang.String">
+	  	SELECT
+			<include refid="Base_Column_List"></include>,p.freshmanprice
+		FROM
+			ProdInfo p
+		LEFT JOIN ActivityProdInfo ac on p.prodid=ac.prodid  and ac.state = '1' and ac.isonecent ='0'
+		INNER JOIN prodtype pt on p.typeid=pt.typeid 
+		WHERE p.isfreshman='1' and p.state='1' and pt.state='1'
+		and p.typeflag!='B'
+	     ORDER BY p.serialnumber ASC,p.createTime DESC
+	 </select>
+	 
+	 <select id="getRecommendProductList" resultMap="FreshmanProductResultMap" parameterType="java.lang.String">
+	  	SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			ProdInfo p 
+		INNER JOIN ptrelation ptr on p.prodid=ptr.prodid
+		INNER JOIN prodtaginfo ptag on ptr.tagid=ptag.tagid	
+		LEFT JOIN ActivityProdInfo ac on p.prodid=ac.prodid  and ac.state = '1' and ac.isonecent ='0'
+		INNER JOIN prodtype pt on p.typeid=pt.typeid 
+	    WHERE ptag.tagid=#{0} and p.state='1' and pt.state='1'
+	    and p.typeflag!='B'
+	     ORDER BY p.serialnumber ASC,p.createTime DESC 
+	 </select>
+	 
+	 <select id="getProdByTypetList" resultMap="FreshmanProductResultMap" parameterType="java.lang.String">
+	  	SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			ProdInfo p 
+		INNER JOIN prodtype ptype on p.typeid=ptype.typeid
+		LEFT JOIN ActivityProdInfo ac on p.prodid=ac.prodid  and ac.state = '1' and ac.isonecent ='0'
+	    where ptype.typeid=#{0} and p.state='1' and ptype.state='1'
+	    and p.typeflag!='B'
+	     ORDER BY p.createTime DESC
+	 </select>
+	 
+	 
+	<select id="findIsfreshmanByIdAndTelephone" resultType="java.lang.String">
+		select isfreshman from prodinfo where userid = #{0} and telephone = #{1}and state='1'
+	</select>
+</mapper>

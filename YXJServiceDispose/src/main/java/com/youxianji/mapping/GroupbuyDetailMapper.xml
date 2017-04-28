@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IGroupbuyDetailDAO" >
+  <resultMap id="BaseResultMap" type="com.youxianji.pojo.GroupbuyDetail" >
+    <id column="groupbuy_detail_id" property="detailid" jdbcType="VARCHAR" />
+    <result column="groupbuy_id" property="groupbuyid" jdbcType="VARCHAR" />
+    <result column="groupbuy_prodid" property="prodid" jdbcType="VARCHAR" />
+    <result column="groupbuy_price" property="groupbuyPrice" jdbcType="DECIMAL" />
+    <result column="special_flag" property="specialFlag" jdbcType="CHAR" />
+    <result column="invitecode" property="invitecode" jdbcType="VARCHAR" />
+    
+  </resultMap>
+
+  <select id="findGroupbuyDetailByGroupbuyId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select groupbuy_detail_id, groupbuy_id, groupbuy_prodid, groupbuy_price,special_flag,invitecode 
+    from yxj_user_gourpbuy_detail
+    where groupbuy_id = #{0}
+  </select>
+  <select id="findGroupbuyDetailByProdid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select groupbuy_detail_id, groupbuy_id, groupbuy_prodid, groupbuy_price,special_flag,invitecode 
+    from yxj_user_gourpbuy_detail
+    where groupbuy_id = #{0} and groupbuy_prodid = #{1}
+  </select>
+   <select id="findGroupbuyDetailIsSpecial" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select groupbuy_detail_id, groupbuy_id, groupbuy_prodid, groupbuy_price,invitecode
+    from yxj_user_gourpbuy_detail
+    where groupbuy_id = #{0} and groupbuy_prodid = #{1} and special_flag = '1'
+  </select>
+</mapper>

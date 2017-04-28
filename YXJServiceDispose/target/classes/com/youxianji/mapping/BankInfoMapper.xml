@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="com.youxianji.dao.IYxjBuserWithDrawcashBankInfoDAO" >
+
+   	<resultMap id="BankInfoAllMap" type="com.youxianji.pojo.YxjBuserWithDrawcashBankInfo" >
+	    <id column="bank_code" property="bankCode" jdbcType="VARCHAR" />
+    	<result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+  	</resultMap>
+  	<sql id="Base_Column_List" >
+        b.bank_code,b.bank_name
+	 </sql>
+   <select id="getBankInfo" parameterType="java.lang.String" resultMap="BankInfoAllMap">
+         select  
+            <include refid="Base_Column_List"></include> 
+            from yxj_buser_withdrawcash_bankinfo b  
+          where 
+          	b.bank_code = #{0} 
+   </select>
+   
+  <select id="getBankInfoAll" parameterType="java.lang.String" resultMap="BankInfoAllMap">
+         select  * from  yxj_buser_withdrawcash_bankinfo  
+   </select>
+ 
+</mapper>

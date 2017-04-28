@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IYxjBuserShopInfoDAO" >
+	
+	<resultMap id="YxjBuserShopInfoResultMap" type="com.youxianji.pojo.YxjBuserShopInfo" >
+		    <id column="shop_id" property="shopId" jdbcType="VARCHAR" />
+    		<result column="userinfo_userid" property="userinfoUserId" jdbcType="VARCHAR" />
+    		<result column="shop_name" property="shopName" jdbcType="VARCHAR" />
+    		<result column="shop_telephone" property="shopTelephone" jdbcType="VARCHAR" />
+    		<result column="shop_address" property="shopAddress" jdbcType="VARCHAR" />
+    		<result column="shop_latitude" property="shopLatitude" jdbcType="VARCHAR" />
+    		<result column="shop_longitude" property="shopLongitude" jdbcType="VARCHAR" />
+    		<result column="shop_businessbegin" property="shopBusinessbegin" jdbcType="VARCHAR" />
+    		<result column="shop_businessend" property="shopBusinessend" jdbcType="VARCHAR" />
+    		<result column="shop_flag" property="shopFlag" jdbcType="VARCHAR" />
+    		<result column="shop_imageurl" property="shopImageurl" jdbcType="VARCHAR" />
+    		<result column="shop_state" property="shopState" jdbcType="VARCHAR" />
+    		
+    		<result column="shop_province" property="shopProvince" jdbcType="VARCHAR" />
+    		<result column="shop_city" property="shopCity" jdbcType="VARCHAR" />
+    		<result column="shop_district" property="shopDistrict" jdbcType="VARCHAR" />
+    		<result column="qrcode_url" property="qrCodeUrl" jdbcType="VARCHAR" />
+  	</resultMap>
+  	
+  	<sql id="Base_Column_List" >
+         *
+	</sql>
+	
+	<select id="getNearByShopList" parameterType="java.lang.String" resultMap="YxjBuserShopInfoResultMap">
+	     SELECT 
+	        <include refid="Base_Column_List"></include> 
+	     FROM yxj_buser_shop_info shop
+	     
+	     <where>
+	        shop_state='1'
+	        AND
+	        getDistance(#{0},#{1},shop.shop_longitude,shop.shop_latitude)&lt;#{2}
+	     </where>
+	</select>
+	
+	<select id="getShopDetail" parameterType="java.lang.String" resultMap="YxjBuserShopInfoResultMap">
+	     SELECT 
+	        <include refid="Base_Column_List"></include> 
+	     FROM yxj_buser_shop_info shop
+	     <where>
+	         shop_id=#{0}
+	     </where>
+	</select>
+	
+	<select id="getShopDetailByuserId" parameterType="java.lang.String" resultMap="YxjBuserShopInfoResultMap">
+	     SELECT 
+	        <include refid="Base_Column_List"></include> 
+	     FROM yxj_buser_shop_info shop
+	     <where>
+	         userinfo_userid=#{0}
+	     </where>
+	</select>
+
+	
+</mapper>

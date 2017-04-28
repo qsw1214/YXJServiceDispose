@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.ICommentPicDAO" >
+	
+	<resultMap id="CommentPicResultMap" type="com.youxianji.pojo.CommentPic" >
+    	<id column="cpid" property="cpid" jdbcType="VARCHAR" />
+   	 	<result column="commentid" property="commentid" jdbcType="VARCHAR" />
+   	 	<result column="picurl" property="picurl" jdbcType="VARCHAR" />
+  	</resultMap>
+  	
+
+  	<sql id="Pic_Column_List" >
+    	Pic, commentId, picUrl
+  	</sql>
+  	
+  	
+
+</mapper>

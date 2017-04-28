@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IDeductAmtRulesDAO" >
+	
+	<resultMap id="DeductAmtRulesResultMap" type="com.youxianji.pojo.DeductAmtRules" >
+		    <id column="id" property="id" jdbcType="VARCHAR" />
+    		<result column="sinceprice" property="sinceprice" jdbcType="DECIMAL" />
+    		<result column="deductamt" property="deductamt" jdbcType="DECIMAL" />
+    		<result column="deductmember" property="deductmember" jdbcType="DECIMAL" />
+    		<result column="begintime" property="begintime" />
+    		<result column="endtime" property="endtime" />
+    		<result column="prodid" property="prodid" jdbcType="VARCHAR" />
+  	</resultMap>
+  	
+  	<sql id="Base_Column_List" >
+         d.id,d.sinceprice,d.deductamt,d.begintime,d.endtime,d.prodid,d.deductmember
+	</sql>
+	
+	<select id="getList" resultMap="DeductAmtRulesResultMap">
+	  	SELECT
+			<include refid="Base_Column_List"></include>
+		FROM DeductAmtRules d
+	    ORDER BY d.sinceprice desc
+	</select>
+	
+	<select id="getByProdId" parameterType="java.lang.String" resultMap="DeductAmtRulesResultMap">
+	  	SELECT
+			<include refid="Base_Column_List"></include>
+		FROM DeductAmtRules d
+		where d.prodId=#{0} 
+		and d.sinceprice <![CDATA[<=]]> #{1}
+		and d.begintime<![CDATA[<=]]>SYSDATE()  and d.endtime >= SYSDATE() and d.state='1'
+	</select>
+	
+	
+	
+</mapper>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="com.youxianji.dao.IYxjBuserWithdrawcashBandbankDAO" >
+
+    <resultMap id="bankinfoResultMap" type="com.youxianji.pojo.YxjBuserWithdrawcashBandbank" >
+	    <id column="band_id" property="bandid" jdbcType="VARCHAR" />
+    	<result column="band_bankprovince" property="bandBankprovince" jdbcType="VARCHAR" />
+    	<result column="band_bankcity" property="bandBankcity" jdbcType="VARCHAR" />
+    	<result column="band_bankname" property="bandBankname" jdbcType="VARCHAR" />
+   		<result column="band_subbank" property="bandSubbank" jdbcType="VARCHAR" />
+    	<result column="band_unitcode" property="bandUnitcode" jdbcType="VARCHAR" />
+    	<result column="band_cardno" property="bandCardno" jdbcType="VARCHAR" />
+    	<result column="band_accountname" property="bandAccountname" jdbcType="VARCHAR" />
+    	<result column="band_idencard" property="bandIdencard" jdbcType="VARCHAR" />
+    	<result column="band_poundage" property="bandPoundage" jdbcType="DECIMAL" />
+    	<result column="band_limitamount" property="bandLimitamount" jdbcType="DECIMAL" />
+    	<result column="enable_flag" property="enableFlag" jdbcType="VARCHAR" />
+    	
+    	<association property="bankInfo" column="bankInfo" resultMap="bankResultMap"></association> 
+    	<association property="userinfo" column="userinfo" resultMap="userinfoResultMap"></association>
+  	</resultMap>
+  	
+  	 <resultMap id="bankResultMap" type="com.youxianji.pojo.YxjBuserWithDrawcashBankInfo" >
+	       <id column="bank_code" property="bankCode" jdbcType="VARCHAR" />
+    	<result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+	 </resultMap>  
+	 
+	  <resultMap id="userinfoResultMap" type="com.youxianji.pojo.UserInfo" >
+	    <id column="userid" property="userId" jdbcType="VARCHAR" />
+	 </resultMap>  
+	 <sql id="Base_Column_List" >
+         b.band_id,b.band_bankprovince,b.band_bankcity,b.band_bankname,b.band_bankcode,b.band_subbank,b.band_unitcode,b.band_cardno,b.band_accountname
+         ,b.band_idencard,b.band_poundage,b.band_limitamount,b.enable_flag,b.band_userid
+	 </sql>
+	  
+   <select id="getBandbankInfo" parameterType="java.lang.String" resultType="com.youxianji.pojo.YxjBuserWithdrawcashBandbank">
+         select  
+            *
+            from yxj_buser_withdrawcash_bandbank b 
+          join 
+          	userinfo u 
+          on 
+          	b.band_userid = u.userid 
+          where 
+          	b.band_userid = #{0} 
+   </select>
+   
+   <select id="getBandbankHave" parameterType="java.lang.String" resultMap="bankinfoResultMap">
+         select  
+            <include refid="Base_Column_List"></include>,ba.bank_code,ba.bank_name 
+            from yxj_buser_withdrawcash_bandbank b  
+            join yxj_buser_withdrawcash_bankinfo ba  
+            on ba.bank_code = b.band_bankcode  
+          where 
+          	b.band_userid = #{0} 
+   </select>
+  	
+  <select id="getWithDrawBandbank" parameterType="java.lang.String" resultMap="bankinfoResultMap">
+         select  
+            <include refid="Base_Column_List"></include>,ba.bank_code,ba.bank_name 
+            from yxj_buser_withdrawcash_bandbank b  
+            join yxj_buser_withdrawcash_bankinfo ba  
+            on ba.bank_code = b.band_bankcode  
+          where 
+          	b.band_userid = #{0}  and  b.enable_flag = '1'
+   </select>
+  	
+	<select id="getApplyWithDraw" parameterType="java.lang.String" resultMap="bankinfoResultMap">
+         select  
+             <include refid="Base_Column_List"></include>,ba.bank_code,ba.bank_name 
+            from yxj_buser_withdrawcash_bandbank b 
+          join  
+          	userinfo u 
+          on  
+          	b.band_userid = u.userid 
+          left join 
+          	yxj_buser_withdrawcash_bankinfo ba 
+          on  
+           ba.bank_code = b.band_bankcode 
+          where 
+          	b.band_userid = #{0} and b.enable_flag = '1' and u.paypass = #{2}
+   </select>
+   
+   <select id="getBandbankInfoById" parameterType="java.lang.String" resultMap="bankinfoResultMap">
+         select  
+            <include refid="Base_Column_List"></include>
+            from yxj_buser_withdrawcash_bandbank b  
+          where 
+          	b.band_id = #{0} 
+   </select>
+   
+   <insert id="saveBandBank" parameterType="com.youxianji.pojo.YxjBuserWithdrawcashBandbank">
+   	     insert into yxj_buser_withdrawcash_bandbank(band_id,band_accountname,band_cardno,band_bankcode,band_bankname,band_idencard,band_userid,enable_flag)
+	   	 values(#{bandid},#{bandAccountname},#{bandCardno},#{bankInfo.bankCode},#{bandBankname},#{bandIdencard},#{userinfo.userId},'0')
+   	</insert>
+   	
+    <update id="updateBandBank" parameterType="com.youxianji.pojo.YxjBuserWithdrawcashBandbank">
+           UPDATE yxj_buser_withdrawcash_bandbank 
+            <set>
+                  <if test='bandAccountname != null'>
+	                  band_accountname=#{bandAccountname},
+	              </if>
+	              <if test='bandCardno != null'>
+	                  band_cardno=#{bandCardno},
+	              </if>
+	              <if test='bankInfo.bankCode != null'>
+	                  band_bankcode=#{bankInfo.bankCode},
+	              </if>
+	              <if test='bandBankname != null and bandBankname != ""'>
+	                  band_bankname=#{bandBankname},
+	              </if>
+	              <if test='bandIdencard != null and bandIdencard != ""'>
+	                  band_idencard=#{bandIdencard},
+	              </if>
+	              <if test='userinfo.userId != null and userinfo.userId != ""'>
+	                  band_userid=#{userinfo.userId}
+	              </if>
+             </set>  
+               WHERE band_id=#{bandid}
+    </update>
+   
+</mapper>

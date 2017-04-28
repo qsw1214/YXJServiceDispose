@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IYxjBuserWithdrawcashTraceDAO">
+	
+	<insert id="insertWithdrawcashTrace" parameterType="com.youxianji.pojo.YxjBuserWithdrawcashTrace">
+	     insert into yxj_buser_withdrawcash_trace(trace_id,withdrawcash_id,operate_time,cash_state,operate_userid,remark)  
+	        values(#{traceId},#{cashUpper.cashId},#{operateTime},#{cashState},#{operator.userId},#{remark})
+	</insert>
+	
+</mapper>

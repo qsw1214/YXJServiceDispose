@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="com.youxianji.dao.IActivityProdInfoDAO" >
+  <resultMap id="ActivityProdInfoResultMap" type="com.youxianji.pojo.ActivityProdInfo" >
+    <id column="activityid" property="activityid" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="activitybegin" property="activitybegin"/>
+    <result column="activityend" property="activityend" />
+    <result column="limitquantity" property="limitquantity" jdbcType="DATE" />
+    <result column="createtime" property="createtime" jdbcType="DATE" />
+    <result column="forzenquantity" property="forzenquantity" jdbcType="INTEGER" />
+    <result column="buytype" property="buytype" jdbcType="CHAR" />
+     <result column="isonecent" property="isonecent" jdbcType="CHAR" />
+    <result column="limitcount" property="limitcount" jdbcType="INTEGER" />
+    <result column="activePrice" property="activePrice" jdbcType="DECIMAL" />
+    <association column="prodid" property="prodInfo" resultMap="ProdInfoResultMap"></association> 
+  </resultMap>
+  
+  <resultMap id="ProdInfoResultMap" type="com.youxianji.pojo.ProdInfo" >
+	    <id column="prodid" property="prodid" jdbcType="VARCHAR" />
+    	<result column="prodname" property="prodname" jdbcType="VARCHAR" />
+    	<result column="sellPrice" property="sellPrice" jdbcType="DECIMAL" />
+    	<result column="valuePrice" property="valuePrice" jdbcType="DECIMAL" />
+   		<result column="typeid" property="typeid" jdbcType="VARCHAR" />
+    	<result column="prodstock" property="prodstock" jdbcType="INTEGER" />
+    	<result column="imageUrl" property="imageUrl" jdbcType="VARCHAR" />
+    	<result column="weight" property="weight" jdbcType="VARCHAR" />
+    	<result column="cpackage" property="cpackage" jdbcType="VARCHAR" />
+    	<result column="remark" property="remark" jdbcType="VARCHAR" />
+    	<result column="preSellTag" property="preSellTag" jdbcType="VARCHAR" />
+    	<result column="prodUnit" property="prodUnit" jdbcType="VARCHAR" />
+    	<result column="preSellTime" property="preSellTime" jdbcType="VARCHAR" />
+    	<result column="ishome" property="ishome" jdbcType="CHAR" />
+    	<result column="isfreshman" property="isfreshman" jdbcType="CHAR" />
+    	<result column="freshmanprice" property="freshmanprice" jdbcType="DECIMAL" />
+    	<result column="serialnumber" property="serialnumber" jdbcType="INTEGER" />
+    	<result column="isactivity" property="isactivity" jdbcType="CHAR" />
+    	<result column="proddesc" property="prodDesc" jdbcType="VARCHAR" />
+  	</resultMap>
+  
+  <sql id="Base_Column_List" >
+     ac.activityid,ac.prodid,ac.title,ac.content,ac.activitybegin,ac.activityend,
+     ac.limitquantity,ac.createtime,ac.forzenquantity,ac.buytype,ac.limitcount,ac.activePrice,ac.isonecent
+  </sql>
+  
+   <sql id="Prod_Column_List" >
+	           p.prodid, p.prodname,ac.activePrice as sellPrice, p.valuePrice, p.typeid, p.prodstock, p.imageUrl, p.weight, p.cpackage,
+	           p.remark, p.preSellflag as preSellTag, p.prodUnit, p.preSellTime,p.proddesc,p.isfreshman,p.freshmanprice
+   </sql>
+   	
+   <select id="getActiveByProdId" parameterType="java.lang.String" resultMap="ActivityProdInfoResultMap">
+         SELECT 
+         	<include refid="Base_Column_List" />
+          FROM ActivityProdInfo ac
+          INNER JOIN ProdInfo p on ac.prodid=p.prodid
+          INNER JOIN ProdType pt on p.typeid=pt.typeid
+          WHERE ac.prodid=#{0} and p.state='1' and pt.state='1' and ac.state='1'
+          and ac.activitybegin<![CDATA[<=]]>now() and ac.activityend>=now()
+   </select>
+   
+    <select id="getPennyProductList" parameterType="java.lang.String" resultMap="ProdInfoResultMap">
+         SELECT 
+         	<include refid="Prod_Column_List" />
+          FROM ActivityProdInfo ac
+          INNER JOIN ProdInfo p on ac.prodid=p.prodid
+          INNER JOIN ProdType pt on p.typeid=pt.typeid
+          WHERE ac.isonecent='1' and p.state='1' and pt.state='1' and ac.state='1'
+   </select>
+   
+    <select id="getOnecentActiveByProdId" parameterType="java.lang.String" resultMap="ActivityProdInfoResultMap">
+         SELECT 
+         	<include refid="Base_Column_List" />
+          FROM ActivityProdInfo ac
+          INNER JOIN ProdInfo p on ac.prodid=p.prodid
+          INNER JOIN ProdType pt on p.typeid=pt.typeid
+          WHERE ac.prodid=#{prodid} and ac.isonecent='1'
+          and p.state='1' and pt.state='1' and ac.state='1'
+   </select>
+  	
+  	
+  	
+
+</mapper>

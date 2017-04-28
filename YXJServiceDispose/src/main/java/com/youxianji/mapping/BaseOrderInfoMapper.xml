@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IBaseOrderInfoDAO" >
+	
+	<resultMap id="BaseOrderInfoResultMap" type="com.youxianji.pojo.BaseOrderInfo" >
+	    <id column="baseordersn" property="baseordersn" jdbcType="VARCHAR" />
+    	<result column="primeprice" property="primeprice" jdbcType="DECIMAL" />
+    	<result column="sellprice" property="sellprice" jdbcType="DECIMAL" /> 
+   		<result column="deliveryfee" property="deliveryfee" jdbcType="DECIMAL" />
+    	<result column="ordertime" property="ordertime"  />
+    	<result column="paytime" property="paytime" />
+    	<result column="paytype" property="paytype" jdbcType="CHAR" />
+    	<result column="receivetime" property="receivetime"/>
+    	<result column="deviceno" property="deviceno" jdbcType="VARCHAR" />
+    	<result column="remark" property="remark" jdbcType="VARCHAR" />
+    	<result column="distributionInterval" property="distributionInterval" jdbcType="VARCHAR" />
+   		<result column="orderstate" property="orderstate" jdbcType="CHAR" />
+   		<result column="ordertype" property="ordertype" jdbcType="CHAR" />
+   		
+   		<result column="receivename" property="receivename" jdbcType="VARCHAR" />
+   		<result column="receivephone" property="receivephone" jdbcType="VARCHAR" />
+   		<result column="receiveprovince" property="receiveprovince" jdbcType="VARCHAR" />
+   		<result column="receivecity" property="receivecity" jdbcType="VARCHAR" />
+   		<result column="receivedistrict" property="receivedistrict" jdbcType="VARCHAR" />
+   		<result column="receiveaddress" property="receiveaddress" jdbcType="VARCHAR" />
+   		
+   	    <result column="deductamt" property="deductamt" jdbcType="DECIMAL" />
+   		
+   		<association column="userid" property="userInfo" resultMap="UserInfoResultMap"/>
+   		<association column="buserid" property="businessUser" resultMap="BusinessUserInfoResultMap"/>
+   	</resultMap>
+   	
+   	<resultMap id="UserInfoResultMap" type="com.youxianji.pojo.UserInfo" >
+  	    <id column="userId" property="userId" jdbcType="VARCHAR" />
+	    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+	    <result column="payPass" property="payPass" jdbcType="VARCHAR" />
+	    <result column="amount" property="amount" jdbcType="VARCHAR" />
+  	</resultMap>
+  	
+  	<resultMap id="BusinessUserInfoResultMap" type="com.youxianji.pojo.BusinessUserInfo" >
+  	    <id column="buserId" property="buserId" jdbcType="VARCHAR" />
+	    <result column="buserName" property="buserName" jdbcType="VARCHAR" />
+	    <result column="amount" property="amount" jdbcType="DECIMAL" />
+	    <result column="couponAmount" property="couponAmount" jdbcType="DECIMAL" /> 
+  	</resultMap>
+   	
+   <sql id="Base_Column_List" >
+    o.baseordersn,o.userid as userId, o.buserid, o.primeprice, o.sellprice, 
+    o.deliveryfee, o.ordertime, 
+    o.paytime,  o.paytype, o.receivetime, o.deviceno,
+    o.remark, o.orderstate,o.ordertype,
+    o.receivename, o.receivephone, o.receiveprovince, o.receivecity, o.receivedistrict,
+    o.receiveaddress,o.deductamt
+  </sql>
+  
+   <sql id="BaseOrder_Column_List" >
+    bo.baseordersn,bo.userid as userId, bo.buserid as buserId, bo.primeprice, bo.sellprice, 
+    bo.deliveryfee, bo.ordertime,bo.paytime, bo.paytype, bo.receivetime, bo.deviceno,bo.bargainamt,
+    bo.remark, bo.orderstate,bo.ordertype,bo.receivename,bo.receivephone,
+    bo.receiveprovince,bo.receivecity,bo.receivedistrict,bo.receiveaddress,bo.deductamt
+  </sql>
+   	
+   <select id="getBaseOrderList" parameterType="java.util.Map" resultMap="BaseOrderInfoResultMap">
+         SELECT 
+         	<include refid="Base_Column_List" />,b.amount,b.couponAmount
+          FROM baseorderinfo o
+          INNER JOIN UserInfo u on o.userid = u.userid
+          INNER JOIN BusinessUserInfo b on o.buserid = b.buserid
+          WHERE o.userid=#{userid} 
+           <if test="status == 0">
+             and o.orderstate!='0'
+           </if>
+           <if test="status == 1">
+             and o.orderstate='1'
+           </if>
+           <if test="status == 2">
+             and (o.orderstate='2' or o.orderstate='3')
+           </if>
+           <if test="status == 3">
+             and o.orderstate='4'
+           </if>
+           <if test="status == 4">
+            and (o.orderstate='6' or o.orderstate='7')
+           </if>
+           <if test='ordertype != null and ordertype != ""'>
+              and  o.ordertype=#{ordertype}
+           </if>
+          order by o.ordertime desc
+    </select>	
+     <select id="getWaitBaseOrderList" parameterType="java.util.Map" resultMap="BaseOrderInfoResultMap">
+         SELECT 
+         	<include refid="Base_Column_List" />,b.amount,b.couponAmount
+          FROM baseorderinfo o
+          INNER JOIN UserInfo u on o.userid = u.userid
+          INNER JOIN BusinessUserInfo b on o.buserid = b.buserid
+          WHERE o.userid=#{userid} and o.orderstate = '1'
+           <if test="status == 0">
+             and o.orderstate!='0'
+           </if>
+           <if test="status == 1">
+             and o.orderstate='1'
+           </if>
+           <if test="status == 2">
+             and (o.orderstate='2' or o.orderstate='3')
+           </if>
+           <if test="status == 3">
+             and o.orderstate='4'
+           </if>
+           <if test="status == 4">
+            and (o.orderstate='6' or o.orderstate='7')
+           </if>
+           <if test='ordertype != null and ordertype != ""'>
+              and  o.ordertype=#{ordertype}
+           </if>
+          order by o.ordertime desc
+    </select>	
+   <select id="getByBaseOrderSn" parameterType="java.lang.String" resultMap="BaseOrderInfoResultMap">
+         SELECT 
+         	<include refid="Base_Column_List" />,b.amount,b.couponAmount,u.payPass,u.amount
+          FROM baseorderinfo o 
+          INNER JOIN UserInfo u on o.userid = u.userid
+          INNER JOIN BusinessUserInfo b on o.buserid = b.buserid
+          WHERE o.baseordersn=#{0}
+    </select>      
+    
+     	
+   	<insert id="insert" parameterType="com.youxianji.pojo.BaseOrderInfo">
+   	     insert into baseorderinfo
+	   	     (baseordersn,userid,buserid,primeprice,sellprice,deliveryfee
+	   	     ,ordertime,paytime,paytype,receivetime,deviceno
+	   	     ,remark,orderstate,ordertype
+	   	     ,bargainamt
+	   	     ,deductamt)
+	   	 values(#{baseordersn},#{userInfo.userId},#{businessUser.buserId},#{primeprice},#{sellprice},#{deliveryfee}
+	   	       ,#{ordertime},#{paytime},#{paytype},#{receivetime},#{deviceno}
+	   	       ,#{remark},#{orderstate},#{ordertype}
+	   	       <choose>
+	   	          <when test="bargainamt!=null">,#{bargainamt}</when>
+	   	          <otherwise>,0</otherwise>
+	   	       </choose>
+	   	       ,#{deductamt}
+	   	       )
+   	
+   	</insert>
+    
+    <update id="update" parameterType="com.youxianji.pojo.BaseOrderInfo">
+           UPDATE baseOrderinfo 
+            <set>
+                  <if test='deliveryfee != null'>
+	                  deliveryfee=#{deliveryfee},
+	              </if>
+	              <if test='primeprice != null'>
+	                  primeprice=#{primeprice},
+	              </if>
+	               <if test='deductamt != null'>
+	                  deductamt=#{deductamt},
+	              </if>
+	              <if test='sellprice != null'>
+	                  sellprice=#{sellprice},
+	              </if>
+	              <if test='orderstate != null and orderstate != ""'>
+	                  orderstate=#{orderstate},
+	              </if>
+	              <if test='paytype != null and paytype != ""'>
+	                  paytype=#{paytype},
+	              </if>
+	              <if test='paytime != null and paytime != ""'>
+	                  paytime=#{paytime},
+	              </if>
+	              <if test='receivename != null and receivename != ""'>
+	                  receivename=#{receivename},
+	              </if>
+	              <if test='receivephone != null and receivephone != ""'>
+	                  receivephone=#{receivephone},
+	              </if>
+	              <if test='receiveprovince != null and receiveprovince != ""'>
+	                  receiveprovince=#{receiveprovince},
+	              </if>
+	              <if test='receivecity != null and receivecity != ""'>
+	                  receivecity=#{receivecity},
+	              </if>
+	              <if test='receivedistrict != null and receivedistrict != ""'>
+	                  receivedistrict=#{receivedistrict},
+	              </if>
+	              <if test='receiveaddress != null and receiveaddress != ""'>
+	                  receiveaddress=#{receiveaddress},
+	              </if>
+	              <if test='remark != null and remark != ""'>
+	                  remark=#{remark},
+	              </if>
+	              <if test='distributionInterval != null and distributionInterval != ""'>
+	                  distributionInterval=#{distributionInterval},
+	              </if>
+	              
+             </set>  
+              WHERE baseordersn=#{baseordersn}
+    </update>
+     <select id="getBaseOrderInfo" parameterType="java.util.Map" resultMap="BaseOrderInfoResultMap">
+         SELECT 
+         	<include refid="BaseOrder_Column_List" />
+          FROM BaseOrderInfo bo
+          INNER JOIN UserInfo u on bo.userid = u.userid
+          INNER JOIN BusinessUserInfo b on bo.buserid = b.buserid
+          WHERE bo.userid=#{userid} 
+           <if test='baseordersn != null and baseordersn != ""'>
+              and  bo.baseordersn=#{baseordersn}
+           </if>
+          order by bo.ordertime desc
+    </select>	
+</mapper>

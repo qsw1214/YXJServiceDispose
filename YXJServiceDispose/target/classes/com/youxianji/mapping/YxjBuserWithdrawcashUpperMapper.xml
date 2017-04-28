@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IYxjBuserWithdrawcashUpperDAO">
+
+	 <resultMap id="drawcashUpperResultMap" type="com.youxianji.pojo.YxjBuserWithdrawcashUpper" >
+	    <id column="cash_id" property="cashId" jdbcType="VARCHAR" />
+    	<result column="cash_applytime" property="cashApplytime" />
+    	<result column="cash_apply" property="cashApply" jdbcType="DECIMAL" />
+    	<result column="cash_fact" property="cashFact" jdbcType="DECIMAL" />
+   		<result column="cash_poundage" property="cashPoundage" jdbcType="DECIMAL" />
+    	<result column="cash_telephone" property="cashTelephone" jdbcType="VARCHAR" />
+    	<result column="danger_flag" property="dangerFlag" jdbcType="CHAR" />
+    	<result column="return_flag" property="returnFlag" jdbcType="CHAR" />
+    	<result column="account_name" property="accountName" jdbcType="VARCHAR" />
+    	<result column="cash_state" property="cashState" jdbcType="CHAR" />
+    	
+    	<association property="cashApplyer" column="cashApplyer" resultMap="userinfoResultMap"></association>
+  	</resultMap>
+  	
+	  <resultMap id="userinfoResultMap" type="com.youxianji.pojo.UserInfo" >
+	    <id column="userid" property="userId" jdbcType="VARCHAR" />
+	 </resultMap>  
+	 
+	 <sql id="Base_Column_List" >
+         up.cash_id,up.cash_applytime,up.cash_apply,up.cash_fact,up.cash_poundage,up.cash_telephone,
+         up.danger_flag,up.return_flag,up.account_name,up.cash_state 
+	 </sql>
+	  
+   <select id="getWithdrawcashUpper" resultMap="drawcashUpperResultMap">
+         select  
+            <include refid="Base_Column_List"/>,uf.userid 
+            from yxj_buser_withdrawcash_upper up  
+          join 
+          	userinfo uf 
+          on 
+          	up.cash_userid = uf.userid  
+          where 
+          	up.cash_userid = #{0}  
+          and up.cash_applytime between #{1} and  #{2} 
+   </select>
+   
+	<insert id="insertWithdrawcashUpper" parameterType="com.youxianji.pojo.YxjBuserWithdrawcashUpper">
+	     insert into yxj_buser_withdrawcash_upper(cash_id,cash_userid,cash_applytime,cash_apply,cash_fact,cash_poundage,cash_telephone,danger_flag,return_flag,account_name,cash_state)  
+	        values(#{cashId},#{cashApplyer.userId},#{cashApplytime},#{cashApply},#{cashFact},#{cashPoundage},#{cashTelephone},#{dangerFlag},#{returnFlag},#{accountName},#{cashState})
+	</insert>
+	
+	
+	
+</mapper>

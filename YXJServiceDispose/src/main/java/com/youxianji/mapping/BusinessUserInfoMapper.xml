@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IUserInfoDAO" >
+	
+	<resultMap id="BusinessUserInfoResultMap" type="com.youxianji.pojo.BusinessUserInfo" >
+	    <id column="buserId" property="buserId" jdbcType="VARCHAR" />
+	    <result column="buserName" property="buserName" jdbcType="VARCHAR" />
+	    <result column="amount" property="amount" jdbcType="DECIMAL" />
+	    <result column="loginPass" property="loginPass" jdbcType="VARCHAR" />
+	    <result column="couponAmount" property="couponAmount" jdbcType="DECIMAL" />
+	    <result column="state" property="state" jdbcType="CHAR" />
+	    <result column="remark" property="remark" jdbcType="VARCHAR"/>
+	    <result column="preselltime" property="preselltime" jdbcType="DATE"/>
+  	</resultMap>
+  	
+  	<sql id="Buser_Column_List" >
+    	buserId, buserName, loginPass, state, amount, couponAmount
+  	</sql>
+  	<select id="validateBusinessUser" resultMap="BusinessUserInfoResultMap">
+  		select 
+	    <include refid="Buser_Column_List" />
+	    from businessUserInfo
+	    where state='1' and buserName = #{0}
+	    	and loginPass = #{1}
+  	</select>
+  	
+  	<select id="selectByBuserId" resultMap="BusinessUserInfoResultMap" parameterType="java.lang.String">
+  		select 
+	    <include refid="Buser_Column_List" />
+	    from businessUserInfo
+	    where buserId = #{buserId,jdbcType=VARCHAR}
+  	</select>
+  	
+  	<select id="selectByBUserName" resultMap="BusinessUserInfoResultMap" parameterType="java.lang.String">
+  		select 
+	    <include refid="Buser_Column_List" />
+	    from businessUserInfo
+	    where buserName = #{buserName,jdbcType=VARCHAR}
+  	</select>
+
+</mapper>

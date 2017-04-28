@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IYxjBuserAppversionInfoDAO" >
+
+  	<resultMap id="YxjBuserAppversionInfoResultMap" type="com.youxianji.pojo.YxjBuserAppversionInfo" >
+	    <id column="buser_app_versionid" property="buserAppVersionid" jdbcType="VARCHAR" />
+	    <result column="buser_app_version_num" property="buserAppVersionNum" jdbcType="VARCHAR" />
+	    <result column="buser_app_curdate" property="buserAppCurdate"  />
+	    <result column="buser_app_content" property="buserAppContent" jdbcType="VARCHAR" />
+	    <result column="buser_app_appname" property="buserAppAppname" jdbcType="VARCHAR" />
+	    <result column="buser_app_state" property="buserAppState" jdbcType="VARCHAR" />
+	    <result column="buser_app_down_path" property="buserAppDownPath" jdbcType="VARCHAR" />
+	    <result column="buser_app_os" property="buserAppOs" jdbcType="VARCHAR" />
+  	</resultMap>
+  
+    <sql id="Base_Column_List" >
+    	*
+  	</sql>
+  	<select id="getYxjBuserAppversionInfoByOsAndVersionNum" parameterType="java.lang.String" resultMap="YxjBuserAppversionInfoResultMap">
+  		select 
+	    <include refid="Base_Column_List" />
+	    from yxj_buser_appversion_info where buser_app_os=#{0} and buser_app_version_num=#{1}
+  	</select>
+  	<select id="getNewAppDeliverInfo" parameterType="java.lang.String" resultMap="YxjBuserAppversionInfoResultMap">
+  		select 
+	    <include refid="Base_Column_List" />
+	    from yxj_buser_appversion_info where buser_app_os=#{0} and buser_app_curdate>#{1} and buser_app_state='2' order by buser_app_curdate desc
+  	</select>
+  	
+     <select id="getCurrentAppDeliverInfo" parameterType="java.lang.String" resultMap="YxjBuserAppversionInfoResultMap">
+  
+  		select 
+	    <include refid="Base_Column_List" />
+	    from yxj_buser_appversion_info where buser_app_os=#{0} and buser_app_state='2' order by buser_app_curdate desc 
+	    limit 1
+  	</select>
+    
+</mapper>

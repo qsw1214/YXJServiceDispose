@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IUserRechargeDao">
+	<update id="userRecharge" parameterType="java.lang.String" >
+		update userinfo m set      
+			amount = (ifnull(m.amount,0) + cast(#{3} as decimal))             
+		where m.userid = #{0} and m.telephone = #{1}
+	</update>
+	
+	<select id="queryUserIsmember" resultType="java.lang.String">
+		select ismember from userinfo where userid = #{0} and  telephone = #{1}
+	</select>
+	<insert id="insert" parameterType="com.youxianji.pojo.UserThirdCharge">
+        insert into UserThirdCharge(chargesn,userid,platform,chargemoney,state,chargetime,employnum,chargetype)
+         values(#{chargesn},#{userid},#{platform},#{chargemoney},#{state},#{chargetime},#{employnum},#{chargetype});
+	</insert>
+	<select id="getUserThirdChargeByOrderSn" parameterType="java.lang.String" resultType="com.youxianji.pojo.UserThirdCharge">
+         SELECT 
+        *
+          FROM UserThirdCharge c WHERE c.chargesn=#{0}
+    </select>	
+    
+    
+    <select id="getEmployeeChargeList" parameterType="java.lang.String" resultType="com.youxianji.pojo.UserThirdCharge">
+         SELECT 
+        *
+          FROM UserThirdCharge c WHERE c.userid=#{0} and c.state='2'
+    </select>	
+    
+     <select id="getListByUserIdAndAmount" parameterType="java.lang.String" resultType="com.youxianji.pojo.UserThirdCharge">
+         SELECT 
+        *
+          FROM UserThirdCharge c WHERE c.userid=#{0} and c.chargemoney=#{1} and c.state='2'
+    </select>	
+    
+</mapper>

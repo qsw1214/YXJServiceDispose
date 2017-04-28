@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IHistorySeekDAO" >
+	
+	<resultMap id="HistorySeekResultMap" type="com.youxianji.pojo.HistorySeek" >
+	    <id column="historyid" property="historyid" jdbcType="VARCHAR" />
+    	<result column="userid" property="userid" jdbcType="VARCHAR" />
+  		<result column="searchterms" property="searchterms" jdbcType="VARCHAR" />
+  		<result column="createtime" property="createtime" />
+  	</resultMap>
+  	
+
+  	 <sql id="Base_Column_List" >
+	      historyid,userid,searchterms
+	 </sql>
+  	
+  	 <select id="getHistorySeekListByUserId" resultMap="HistorySeekResultMap" parameterType="java.lang.String">
+  	      SELECT 
+  	         <include refid="Base_Column_List"></include>
+  	      FROM 
+  	         HistorySeek where userid=#{0} ORDER BY  createtime DESC
+  	 </select>
+  	 
+  	 <select id="getHistoryByProdName" resultMap="HistorySeekResultMap" parameterType="java.lang.String">
+  	      SELECT 
+  	         <include refid="Base_Column_List"></include>
+  	      FROM 
+  	         HistorySeek where userid=#{0} and searchterms=#{1}
+  	 </select>
+  	 
+  	 <insert id="insert" parameterType="java.lang.String">
+          insert into HistorySeek(historyid,userid,searchterms,createtime) values(#{0},#{1},#{2},#{3}) 
+  	 </insert>
+  	 
+  	 <update id="update" parameterType="java.lang.String">
+          update HistorySeek set searchterms=#{1},createtime=#{2} where historyid=#{0}
+  	 </update>
+  	 
+  	 <delete id="delete" parameterType="java.lang.String">
+  	      delete from HistorySeek where userid=#{0}
+  	 </delete>
+
+</mapper>

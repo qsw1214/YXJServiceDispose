@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.ILogInfoDAO" >
+	
+	<resultMap id="LogInfoResultMap" type="com.youxianji.pojo.LogInfo" >
+	    <id column="id" property="id" jdbcType="VARCHAR" />
+	    <result column="operateModule" property="operateModule" jdbcType="VARCHAR" />
+	    <result column="operateMethod" property="operateMethod" jdbcType="VARCHAR" />
+	    <result column="parameters" property="parameters" jdbcType="VARCHAR" />
+	    <result column="operator" property="operator" jdbcType="VARCHAR" />
+	    <result column="operateTime" property="operateTime" jdbcType="DATE" />
+	  	<result column="reqIp" property="reqIp" jdbcType="VARCHAR" />
+	    <result column="exceptionDesc" property="operateMethod" jdbcType="VARCHAR" />
+	    <result column="exceptionAddr" property="exceptionAddr" jdbcType="VARCHAR" />
+	    <association column="businessLogInfo" property="businessLogInfo" resultMap="BusinessLogInfoResultMap"/>
+  	</resultMap>
+  	
+  	
+  	
+  	
+  	
+  
+  
+  
+  
+
+</mapper>

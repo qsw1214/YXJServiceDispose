@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IYxjUserBarginDetailDAO" >
+  <resultMap id="BaseResultMap" type="com.youxianji.pojo.YxjUserBarginDetail" >
+    <id column="bargain_detail_id" property="detailId" jdbcType="VARCHAR" />
+    <result column="bargain_id" property="bargainId" jdbcType="VARCHAR" />
+    <result column="bargain_relation_user_id" property="relationUserId" jdbcType="VARCHAR" />
+    <result column="bargain_time" property="bargainTime" jdbcType="TIMESTAMP" />
+    <result column="bargain_money" property="barginMoney" jdbcType="DECIMAL" />
+    <result column="bargain_rules_id" property="bargainRulesId" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from yxj_user_bargain_detail
+    where bargain_detail_id = #{bargainDetailId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertBargainDetail" parameterType="com.youxianji.pojo.YxjUserBarginDetail" >
+    insert into yxj_user_bargain_detail (bargain_detail_id,bargain_id, bargain_relation_user_id, bargain_time, bargain_money,bargain_rules_id)
+    values (#{detailId,jdbcType=VARCHAR},#{bargainId,jdbcType=VARCHAR}, #{relationUserId,jdbcType=VARCHAR}, 
+      #{bargainTime,jdbcType=TIMESTAMP}, #{barginMoney,jdbcType=DECIMAL}, #{bargainRulesId,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.youxianji.pojo.YxjUserBarginDetail" >
+    update yxj_user_bargain_detail
+    set bargain_id = #{bargainId,jdbcType=VARCHAR},
+      bargain_relation_user_id = #{relationUserId,jdbcType=VARCHAR},
+      bargain_time = #{bargainTime,jdbcType=TIMESTAMP},
+      bargain_money = #{bargainMoney,jdbcType=DECIMAL},
+      bargain_rules_id = #{bargainRulesId,jdbcType=VARCHAR}
+    where bargain_detail_id = #{bargainDetailId,jdbcType=VARCHAR}
+  </update>
+  <select id="findBargainDetailByBargainId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select bargain_detail_id, bargain_id, bargain_relation_user_id, bargain_time, bargain_money,bargain_rules_id
+    from yxj_user_bargain_detail
+    where bargain_id = #{0}
+    order by bargain_time desc
+  </select>
+  <select id="findBargainDetail" resultMap="BaseResultMap" parameterType="com.youxianji.pojo.YxjUserBarginDetail" >
+    select bargain_detail_id, bargain_id, bargain_relation_user_id, bargain_time, bargain_money,bargain_rules_id
+    from yxj_user_bargain_detail
+    where bargain_id=#{0}
+    and bargain_relation_user_id=#{1}
+    order by bargain_time desc
+  </select>
+  <select id="findBargainDetailByUser" resultMap="BaseResultMap" parameterType="com.youxianji.pojo.YxjUserBarginDetail" >
+    select bargain_detail_id, bargain_id, bargain_relation_user_id, bargain_time, bargain_money,bargain_rules_id
+    from yxj_user_bargain_detail
+    where bargain_rules_id=#{0}
+    and bargain_relation_user_id=#{1}
+  </select>
+</mapper>

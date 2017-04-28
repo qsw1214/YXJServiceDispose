@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IOrderDetailDAO" >
+	
+	<resultMap id="OrderDetailResultMap" type="com.youxianji.pojo.OrderDetail" >
+   		<id column="detailid" property="detailid" jdbcType="VARCHAR" />
+    	<result column="ordersn" property="ordersn" jdbcType="VARCHAR" />
+   		<result column="quantity" property="quantity" jdbcType="INTEGER" />
+    	<result column="sellprice" property="sellprice" jdbcType="DECIMAL" />
+    	<result column="prodname" property="prodname" jdbcType="VARCHAR" />
+    	<result column="isreview" property="isreview" jdbcType="CHAR" />
+    	<result column="redundancefir" property="redundancefir" jdbcType="VARCHAR" />
+    	<result column="suppilerid" property="suppilerid" jdbcType="VARCHAR" />
+    	<association column="prodInfo" property="prod" resultMap="ProdInfoResultMap"></association>
+   </resultMap>
+    <resultMap id="ProdInfoResultMap" type="com.youxianji.pojo.ProdInfo" >
+	    <id column="pd_prodid" property="prodid" jdbcType="VARCHAR" />
+	    <result column="prodname" property="prodname" jdbcType="VARCHAR" />
+	    <result column="prodnum" property="prodnum" jdbcType="VARCHAR" />
+	    <result column="imageUrl" property="imageUrl" jdbcType="VARCHAR" />
+	    <result column="prodUnit" property="prodUnit" jdbcType="VARCHAR" />
+	    <result column="preSellTag" property="preSellTag" jdbcType="VARCHAR" />
+	    <result column="preSellTime" property="preSellTime" jdbcType="VARCHAR" />
+	    <result column="isfreshman" property="isfreshman" jdbcType="CHAR" />
+	    <result column="prodstock" property="prodstock" jdbcType="INTEGER" />
+	    <result column="weight" property="weight" jdbcType="DECIMAL" />
+	    <result column="prod_sellPrice" property="sellPrice" jdbcType="DECIMAL" />
+    	<result column="prod_valuePrice" property="valuePrice" jdbcType="DECIMAL" />
+    	<result column="freshmanprice" property="freshmanprice" jdbcType="DECIMAL" />
+    	<result column="payflag" property="payflag" jdbcType="CHAR" />
+    	<result column="isactivity" property="isactivity" jdbcType="CHAR" />
+    	<result column="deductFlag" property="deductFlag" jdbcType="VARCHAR" />
+    	
+	    <result column="state" property="state" jdbcType="CHAR" />
+   	</resultMap>
+   	
+  	
+  	<insert id="save" parameterType="com.youxianji.pojo.OrderDetail">
+   	     insert into OrderDetail(detailid,ordersn,prodid,quantity,sellprice,prodname,isreview,redundancefir,suppilerid)
+	   	 values(#{detailid},#{ordersn},#{prod.prodid},#{quantity},#{sellprice},#{prodname},#{isreview},#{redundancefir}
+	   	 ,#{suppilerid})
+   	</insert>
+   	
+   	<sql id="Base_Column_List" >
+   	  od.detailid,od.ordersn,od.prodid,od.quantity,od.sellprice,od.prodname,od.isreview,od.redundancefir
+    </sql>
+  
+   <select id="getDetailListByOrderSn" parameterType="java.lang.String" resultMap="OrderDetailResultMap">
+         SELECT 
+         	<include refid="Base_Column_List" />
+         	,p.prodid as pd_prodid,p.prodname,p.prodnum,p.imageUrl,p.prodUnit,p.preSellflag as preSellTag,p.preSellTime,p.isfreshman,p.state,p.prodstock
+         	,p.sellPrice as prod_sellPrice,p.valuePrice as prod_valuePrice,p.freshmanprice,p.payflag,p.isactivity,p.deductFlag,p.weight
+          FROM orderDetail od
+          INNER JOIN prodInfo p ON p.prodid = od.prodid
+          WHERE od.ordersn=#{0} 
+    </select>	
+    
+    <select id="getByProdId" parameterType="java.lang.String" resultType="com.youxianji.pojo.OrderDetail">
+         SELECT 
+         	od.*
+          FROM orderDetail od
+          WHERE od.ordersn=#{0} and od.prodid=#{1}
+    </select>
+  	
+  	<select id="getMonthSellCountByProd" parameterType="java.util.Map" resultType="string">
+         SELECT 
+         	count(*)
+          FROM orderDetail od
+          INNER JOIN prodInfo p ON p.prodid = od.prodid
+          INNER JOIN orderInfo o ON o.ordersn=od.ordersn
+          WHERE o.paytime>=#{beginTime} and o.paytime<![CDATA[<=]]>#{endTime} and p.prodid=#{prodId}
+    </select>	
+  	<select id="getOrderDetailByCondition" parameterType="java.util.Map" resultMap="OrderDetailResultMap">
+         SELECT 
+         	<include refid="Base_Column_List" />,p.prodid as pd_prodid  
+          FROM orderDetail od 
+          INNER JOIN (select o.ordertime as ordertime,o.ordersn as ordersn from orderInfo o join userinfo u on o.userid = u.userid and u.userid = #{userId} and o.orderstate in ('1','2','3','4')) p on p.ordersn = od.ordersn and p.ordertime between #{beginTime} and #{endTime}  
+          INNER JOIN prodInfo p ON p.prodid = od.prodid and od.prodid=#{prodId}
+    </select>	
+  	 <update id="doSwitchOrderDetailPrice" parameterType="com.youxianji.pojo.OrderDetail">
+           UPDATE orderDetail 
+             <set>
+	              <if test='sellprice != null'>
+	                  sellprice=#{sellprice},
+	              </if>
+	              <if test='isreview != null'>
+	              	  isreview=#{isreview}
+	              </if>
+             </set>  
+              WHERE detailid=#{detailid}
+    </update>
+    
+    <delete id="delete" parameterType="java.lang.String">
+    	delete from orderDetail where detailid=#{0}
+    </delete>
+
+</mapper>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.ICartInfoDAO" >
+	
+	<resultMap id="CartInfoResultMap" type="com.youxianji.pojo.CartInfo" >
+	    <id column="cartId" property="cartId" jdbcType="VARCHAR" />
+    	<result column="prodName" property="prodName" jdbcType="VARCHAR" />
+    	<result column="imageUrl" property="imageUrl" jdbcType="VARCHAR" />
+    	<result column="prodOriginalPrice" property="prodOriginalPrice" jdbcType="DECIMAL" />
+    	<result column="prodPrice" property="prodPrice" jdbcType="DECIMAL" />
+    	<result column="preSellTag" property="preSellTag" jdbcType="DECIMAL" />
+    	<result column="prodUnit" property="prodUnit" jdbcType="DECIMAL" />
+    	<result column="preSellTime" property="preSellTime" jdbcType="DECIMAL" />
+   		<result column="prodQuantity" property="prodQuantity" jdbcType="DECIMAL" />
+    	<result column="prodTotalPrice" property="prodTotalPrice" jdbcType="DECIMAL" />
+    	<association column="userInfo" property="userInfo" resultMap="UserInfoResultMap"></association>
+    	<association column="prodInfo" property="prodInfo" resultMap="ProdInfoResultMap"></association>
+   	</resultMap>
+   	<resultMap id="UserInfoResultMap" type="com.youxianji.pojo.UserInfo" >
+	    <id column="userId" property="userId" jdbcType="VARCHAR" />
+    	<result column="userName" property="userName" jdbcType="VARCHAR" />
+   	</resultMap>
+   	<resultMap id="ProdInfoResultMap" type="com.youxianji.pojo.ProdInfo" >
+	    <id column="pd_prodid" property="prodid" jdbcType="VARCHAR" />
+	    <result column="pd_prodname" property="prodname" jdbcType="VARCHAR" />
+	    <result column="pd_imageUrl" property="imageUrl" jdbcType="VARCHAR" />
+	    <result column="sellPrice" property="sellPrice" jdbcType="DECIMAL" />
+    	<result column="valuePrice" property="valuePrice" jdbcType="DECIMAL" />
+    	<result column="weight" property="weight" jdbcType="DECIMAL" />
+    	<result column="isfreshman" property="isfreshman" jdbcType="CHAR" />
+    	<result column="freshmanprice" property="freshmanprice" jdbcType="DECIMAL" />
+    	<result column="payflag" property="payflag" jdbcType="CHAR" />
+    	<result column="isactivity" property="isactivity" jdbcType="CHAR" />
+    	<result column="deductFlag" property="deductFlag" jdbcType="VARCHAR" />
+    	<result column="suppilerid" property="suppilerid" jdbcType="VARCHAR" />
+    	<result column="stockflag" property="stockflag" jdbcType="VARCHAR" />
+    	<result column="provenanceflag" property="provenanceflag" jdbcType="VARCHAR" />
+    	<result column="pd_state" property="state" jdbcType="VARCHAR" />
+	    <association property="businessUser" column="businessUser" resultMap="BusinessUserResultMap"></association>
+   	</resultMap>
+   	<resultMap id="BusinessUserResultMap" type="com.youxianji.pojo.BusinessUserInfo" >
+	    <id column="pd_buserId" property="buserId" jdbcType="VARCHAR" />
+	 </resultMap>   
+  	
+   	
+   <sql id="Base_Column_List" >
+      c.cartId,c.prodName,c.imageUrl,c.prodOriginalPrice,c.prodPrice,c.preSellTag,c.prodUnit,c.preSellTime,
+      c.prodQuantity,c.prodTotalPrice,c.prodid as pd_prodid,c.userid as userId,
+      p.sellPrice,p.valuePrice,p.isfreshman,p.freshmanprice,p.payflag,p.isactivity
+      ,p.deductFlag,p.prodname as pd_prodname,p.suppilerid,p.stockflag
+      ,p.provenanceflag,p.imageUrl as pd_imageUrl,p.weight,p.state as pd_state
+  </sql>
+   	  
+  <select id="getCartInfoCount" parameterType="java.lang.String" resultType="java.lang.String">
+  	SELECT
+		SUM(c.prodQuantity)
+	FROM
+		cartInfo c,userInfo u where u.userid = c.userid and c.userid=#{userid}
+  </select>
+  
+  <select id="getListCartInfoByUserId" resultMap="CartInfoResultMap" parameterType="java.lang.String">
+  	SELECT 
+  	  <include refid="Base_Column_List"></include>
+  	FROM CARTINFO c inner join prodinfo p on c.prodid = p.prodid
+  	
+  	WHERE c.USERID=#{0} 
+  </select>
+  
+  <select id="getById" resultMap="CartInfoResultMap" parameterType="java.lang.String">
+  	SELECT 
+  	  <include refid="Base_Column_List"></include>,b.buserId as pd_buserId
+  	FROM CARTINFO C 
+  	   inner join prodinfo p on c.prodid = p.prodid
+  	   inner join businessuserinfo b on p.buserid=b.buserid  	
+  	WHERE C.CARTID=#{0} 
+  </select>
+  
+  <select id="getByProdIdAndUserId" resultMap="CartInfoResultMap" parameterType="java.lang.String">
+  	SELECT 
+  	  <include refid="Base_Column_List"></include>
+  	FROM CARTINFO C inner join prodinfo p on c.prodid = p.prodid
+  	
+  	WHERE C.PRODID=#{0} and c.userid=#{1}
+  </select>
+  
+  <select id="queryIsFreshProdInfo" resultMap="CartInfoResultMap" parameterType="java.lang.String">
+  	SELECT 
+  	  <include refid="Base_Column_List"></include>
+  	FROM CARTINFO C inner join prodinfo p on c.prodid = p.prodid
+  	
+  	WHERE c.userid=#{1} and p.isfreshman='1' 
+  </select>
+  
+  <select id="queryIsOnecentProdInfo" resultMap="CartInfoResultMap" parameterType="java.lang.String">
+  	SELECT 
+  	  <include refid="Base_Column_List"></include>
+  	FROM CARTINFO C 
+  	  inner join prodinfo p on c.prodid = p.prodid
+  	  inner join ActivityProdInfo ac on p.prodid=ac.prodid
+  	WHERE c.userid=#{1} and ac.isonecent='1' 
+  </select>
+    	
+  <insert id="update" parameterType="com.youxianji.pojo.CartInfo" >
+         UPDATE CARTINFO C SET
+           C.prodQuantity = #{prodQuantity},
+           C.prodTotalPrice = #{prodTotalPrice}
+          WHERE C.CARTID=#{cartId}
+  </insert>
+  
+  <delete id="deleteByCartId" parameterType="java.lang.String">
+        DELETE FROM CARTINFO  WHERE CARTID=#{0}  
+  </delete>
+  
+  <delete id="deleteByUserId" parameterType="java.lang.String">
+        DELETE FROM CARTINFO WHERE USERID=#{0}  
+  </delete>
+  
+   <delete id="deleteByProdId" parameterType="java.lang.String">
+        DELETE FROM CARTINFO WHERE PRODID=#{0} AND USERID=#{1} 
+   </delete>
+  
+  <insert id="save" parameterType="com.youxianji.pojo.CartInfo" >
+        INSERT INTO CARTINFO(CARTID,USERID,PRODID,PRODNAME,IMAGEURL,PRODORIGINALPRICE,PRODPRICE,PRESELLTAG
+            ,PRODUNIT,PRESELLTIME,PRODQUANTITY,PRODTOTALPRICE) 
+        VALUES(#{cartId},#{userInfo.userId},#{prodInfo.prodid},#{prodName},#{imageUrl},#{prodOriginalPrice},#{prodPrice},#{preSellTag}
+            ,#{prodUnit},#{preSellTime},#{prodQuantity},#{prodTotalPrice})
+  </insert>
+  
+  	
+   	
+   	
+   	
+</mapper>

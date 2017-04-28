@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IWmsBizzDeptSupplyerDAO" >
+
+  	<resultMap id="WmsBizzDeptSupplyerResultMap" type="com.youxianji.pojo.WmsBizzDeptSupplyer" >
+  		<id column="DEPT_ID" property="deptId" jdbcType="VARCHAR" />
+		<result column="DEPT_TEL" property="deptTel" jdbcType="VARCHAR" />
+		<result column="DEPT_ADDR" property="deptAddr" jdbcType="VARCHAR" />
+  		<result column="DEPT_CONTACTS" property="deptContacts" jdbcType="VARCHAR" />
+  		<result column="DEPT_INDUSTRY_CODE" property="deptIndustryCode" jdbcType="VARCHAR" />
+  		<result column="DEPT_TAX_CODE" property="deptTaxCode" jdbcType="VARCHAR" />
+  		<result column="DEPT_ORG_CODE" property="deptOrgCode" jdbcType="VARCHAR" />
+  		<result column="DEPT_MONEY" property="deptMoney" jdbcType="VARCHAR" />
+  		<result column="DEPT_PROPERTY" property="deptProperty" jdbcType="VARCHAR" />
+  	</resultMap>
+  	
+    <select id="getById" parameterType="java.lang.String" resultMap="WmsBizzDeptSupplyerResultMap">
+        select 
+          *
+        from wms_bizz_dept_supplyer
+        where DEPT_ID=#{0}
+        
+    
+    </select>
+	
+    
+</mapper>

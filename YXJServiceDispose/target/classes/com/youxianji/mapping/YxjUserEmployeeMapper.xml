@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="com.youxianji.dao.IYxjUserEmployeeDAO" >
+   	
+   <select id="getObject" parameterType="java.lang.String" resultType="com.youxianji.pojo.YxjUserEmployee">
+         SELECT 
+         	*
+          FROM yxj_user_employee
+          WHERE employnum=#{0} and state='1'
+   </select>
+   <select id="getUserEmployeeByTelephone" parameterType="java.lang.String" resultType="com.youxianji.pojo.YxjUserEmployee">
+         SELECT 
+         	*
+          FROM yxj_user_employee
+          WHERE telephone=#{0} and state='1'
+   </select>
+
+</mapper>

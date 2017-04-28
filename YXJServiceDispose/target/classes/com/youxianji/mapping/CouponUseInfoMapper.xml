@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.ICouponUseInfoDAO" >
+	
+	<resultMap id="ConponUseInfoResultMap" type="com.youxianji.pojo.CouponUseInfo" >
+		    <id column="cuid" property="cuid" jdbcType="VARCHAR" />
+    		<result column="ordersn" property="ordersn" jdbcType="VARCHAR" />
+    		<result column="couponAmount" property="couponAmount" jdbcType="DECIMAL" />
+    		<result column="state" property="state" jdbcType="CHAR" />
+    		<result column="useBeginTime" property="useBeginTime" jdbcType="DATE" />
+    		<result column="useEndTime" property="useEndTime" jdbcType="DATE" />
+    		<result column="coupontitle" property="coupontitle" jdbcType="VARCHAR" />
+    		<result column="couponName" property="couponName" jdbcType="VARCHAR" />
+    		<result column="sinceMoney" property="sinceMoney" jdbcType="DECIMAL" />
+    		<result column="couponDesc" property="couponDesc" jdbcType="VARCHAR" />
+    		<association column="userid" property="userInfo" resultMap="UserInfoResultMap"/>
+    		<association column="couponid" property="couponRuleInfo" resultMap="CouponRuleInfoResultMap"/>
+  	</resultMap>
+  	
+  	<resultMap id="UserInfoResultMap" type="com.youxianji.pojo.UserInfo" >
+		    <id column="userId" property="userId" jdbcType="VARCHAR" />
+    		<result column="telephone" property="telephone" jdbcType="VARCHAR" />
+  	</resultMap>
+  	<resultMap id="CouponRuleInfoResultMap" type="com.youxianji.pojo.CouponRuleInfo" >
+		    <id column="couponId" property="couponId" jdbcType="VARCHAR" />
+    		<result column="couponName" property="couponName" jdbcType="VARCHAR" />
+    		<result column="couponMoney" property="couponMoney" jdbcType="DECIMAL" />
+    		<result column="sinceMoney" property="sinceMoney" jdbcType="DECIMAL" />
+    		<result column="createTime" property="createTime" jdbcType="DATE" />
+    		<result column="beginTime" property="beginTime" jdbcType="DATE" />
+    		<result column="endTime" property="endTime" jdbcType="DATE" />
+    		<result column="state" property="state" jdbcType="CHAR" />
+    		<result column="prodTypeId" property="prodTypeId" jdbcType="VARCHAR" />
+    		<result column="couponDesc" property="couponDesc" jdbcType="VARCHAR" />
+    		<result column="adid" property="adid" jdbcType="VARCHAR" />
+  	</resultMap>
+  	
+  	<sql id="Base_Column_List" >
+          cu.cuid,cu.couponAmount,cu.couponId,cu.couponName,
+          cu.couponDesc,cu.sinceMoney,
+          cu.useBeginTime,cu.useEndTime,cu.coupontitle
+	</sql>
+	
+	<select id="getUsefulCouponList" resultMap="ConponUseInfoResultMap" parameterType="java.lang.String">
+	  	SELECT
+			<include refid="Base_Column_List"></include>
+		FROM CouponUseInfo cu
+		WHERE cu.userid=#{0} and cu.state='1'
+	    and cu.useBeginTime <![CDATA[<=]]> date_format(now(),'%y-%m-%d') and cu.useEndTime >= date_format(now(),'%y-%m-%d')
+	    ORDER BY cu.useEndTime asc,cu.couponAmount desc
+	</select>
+	
+    <select id="getMatchUsefulCouponList" resultMap="ConponUseInfoResultMap">
+	  	SELECT
+			<include refid="Base_Column_List"></include>
+		FROM CouponUseInfo cu
+		WHERE cu.userid=#{userId} and cu.state='1'
+		and cu.useBeginTime <![CDATA[<=]]> date_format(now(),'%y-%m-%d') and cu.useEndTime >= date_format(now(),'%y-%m-%d')
+		and cu.sinceMoney <![CDATA[<=]]> #{conditionAmt}
+	    ORDER BY cu.useEndTime asc,cu.couponAmount desc
+	</select>
+	
+	<select id="getUsedCoupon" resultMap="ConponUseInfoResultMap" parameterType="java.lang.String">
+	  	SELECT
+			  *
+		FROM CouponUseInfo cu
+		WHERE cu.cuid=#{0} and cu.state='1'
+	</select>
+  	<update id="update" parameterType="com.youxianji.pojo.CouponUseInfo">
+  	    UPDATE CouponUseInfo 
+  	    <set>
+  	       <if test='ordersn != null and ordersn != ""'>
+               ordersn=#{ordersn},
+           </if>
+           <if test='state != null and state != ""'>
+               state=#{state},
+           </if>
+  	    </set>
+  	    WHERE cuid=#{cuid}
+  	</update>
+    <update id="updateFinished" parameterType="java.lang.String">
+  	    UPDATE CouponUseInfo SET state='3' WHERE userid=#{0} and ordersn=#{1} and state='2'
+  	</update>
+  	 <update id="doBackCoupon" parameterType="java.lang.String">
+  	    UPDATE CouponUseInfo SET ordersn=null,state='1' WHERE userid=#{0} and ordersn=#{1} and state='2'
+  	</update>
+  	<update id="updateCancel" parameterType="java.lang.String">
+  		UPDATE CouponUseInfo
+		   INNER JOIN CouponRuleInfo
+		ON CouponUseInfo.couponId=CouponRuleInfo.couponId
+		  SET CouponUseInfo.state='4'
+		WHERE CouponUseInfo.userid=#{0} and CouponUseInfo.state='1'
+		  and CouponUseInfo.useEndTime<![CDATA[<]]>SYSDATE()
+		  and CouponRuleInfo.state='0' 
+  	</update>
+  		
+  	<insert id="insert" parameterType="Map" >
+  	 insert into youxianjifresh.couponuseinfo(cuid ,couponid,userid,couponamount,state,useBeginTime,useEndTime,sincemoney,couponname,coupondesc,coupontitle)
+  	   values(#{cuid},#{couponid},#{userId},#{couponAmount},#{state},#{useBeginTime},#{useEndTime},#{sinceMoney},#{couponName},#{couponDesc},#{couponTitle})
+    </insert>
+</mapper>

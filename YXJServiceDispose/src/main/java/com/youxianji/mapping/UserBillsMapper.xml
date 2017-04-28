@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IUserBillsDAO" >
+	
+	<resultMap id="UserBillsResultMap" type="com.youxianji.pojo.UserBills" >
+   		 <id column="billid" property="billid" jdbcType="VARCHAR" />
+   		 <result column="operatesn" property="operatesn" jdbcType="VARCHAR" />
+   		 <result column="operatetime" property="operatetime" jdbcType="TIMESTAMP" />
+   		 <result column="amountbalance" property="amountbalance" jdbcType="DECIMAL" />
+   		 <result column="operatemoney" property="operatemoney" jdbcType="DECIMAL" />
+   		 <result column="billsflag" property="billsflag" jdbcType="CHAR" />
+   		 <result column="operatedesc" property="operatedesc" jdbcType="VARCHAR" />
+   		 <result column="remark" property="remark" jdbcType="VARCHAR" />
+	     <association column="userid" property="userInfo" resultMap="UserInfoResultMap"/>
+  	</resultMap>
+  	<resultMap id="UserInfoResultMap" type="com.youxianji.pojo.UserInfo" >
+  	    <id column="userId" property="userId" jdbcType="VARCHAR" />
+	    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+  	</resultMap>
+  	<sql id="Base_Column_List" >
+    	ub.billid,ub.userid,ub.operatesn,ub.operatetime,ub.amountbalance,ub.operatemoney,ub.billsflag,ub.operatedesc,ub.remark
+  	</sql>
+  	
+  	<select id="getPageBillsByUserId" parameterType="java.util.Map" resultMap="UserBillsResultMap">
+         SELECT 
+         	<include refid="Base_Column_List" />
+          FROM userbills ub
+          LEFT JOIN UserInfo u on ub.userid = u.userid
+           WHERE ub.userid=#{userid} order by ub.billid desc
+    </select>
+    
+    <select id="getBillsByUserIdOut" parameterType="java.lang.String" resultMap="UserBillsResultMap">
+         SELECT 
+         	<include refid="Base_Column_List" />
+          FROM userbills ub
+          LEFT JOIN UserInfo u 
+          on ub.userid = u.userid 
+           WHERE ub.userid = #{0} and ub.billsflag = '1' 
+           order by ub.operatetime desc
+    </select>
+    
+	<select id="getBillsByUserIdIn" parameterType="java.lang.String" resultMap="UserBillsResultMap">
+         SELECT 
+         	<include refid="Base_Column_List" />
+          FROM userbills ub
+          LEFT JOIN UserInfo u 
+          on ub.userid = u.userid
+           WHERE ub.userid = #{0} and ub.billsflag = '0' and ub.operatedesc = '线下收款' 
+           order by ub.operatetime desc
+    </select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IRecommendDAO" >
+	
+	<resultMap id="RecommendResultMap" type="com.youxianji.pojo.Recommend" >
+	    <id column="id" property="id" jdbcType="VARCHAR" />
+    	<result column="prodname" property="prodname" jdbcType="VARCHAR" />
+  	</resultMap>
+  	
+  	 <sql id="Base_Column_List" >
+	      prodname
+	 </sql>
+  	
+  	 <select id="getRecommendProdList" resultMap="RecommendResultMap" parameterType="java.lang.String">
+  	      SELECT 
+  	         <include refid="Base_Column_List"></include>
+  	      FROM 
+  	         Recommend
+  	 </select>
+  	
+  	
+
+</mapper>

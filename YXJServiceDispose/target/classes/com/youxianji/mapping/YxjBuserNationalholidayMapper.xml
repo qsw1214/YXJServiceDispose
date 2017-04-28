@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IYxjBuserNationalholidayDAO" >
+
+  <resultMap id="NationalholidayResultMap" type="com.youxianji.pojo.YxjBuserWithdrawcashNationalholiday" >
+	    <id column="holiday_id" property="holidayId" jdbcType="VARCHAR" />
+    	<result column="holiday_name" property="holidayName" jdbcType="VARCHAR" />
+  		<result column="begindate" property="begindate"/>
+   		<result column="enddate" property="enddate"/>
+   		<result column="adjustdateone" property="adjustdateone"/>
+   		<result column="adjustdatetwo" property="adjustdatetwo"/>
+  	</resultMap>
+  	
+  	 <sql id="Base_Column_List" >
+	       na.holiday_id,na.holiday_name, na.begindate, na.enddate,na.adjustdateone,na.adjustdatetwo 
+	 </sql>
+  	<select id="getNationalholidayByTime" resultMap="NationalholidayResultMap">
+  		select  <include refid="Base_Column_List"></include>    
+	    from yxj_buser_withdrawcash_nationalholiday  na  
+	    where #{0} between na.begindate AND na.enddate 
+  	</select>
+
+	<select id="getholidayByWorkTime" resultMap="NationalholidayResultMap">
+  		select  <include refid="Base_Column_List"></include>  
+	    from yxj_buser_withdrawcash_nationalholiday na  
+	    where #{0} = na.adjustdateone 
+  	</select>
+</mapper>

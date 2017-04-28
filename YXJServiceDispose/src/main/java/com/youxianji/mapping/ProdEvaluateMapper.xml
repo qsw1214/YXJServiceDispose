@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IProdEvaluateDAO">
+
+	<insert id="insert" parameterType="com.youxianji.pojo.ProdEvaluate">
+		insert into prodEvaluate(id,userid,prodid,prodevaluate,createtime,telephone,starlevel,state,ordersn)
+		 values(#{id},#{userid},#{prodid},#{prodevaluate},#{createtime},#{telephone},#{starlevel},#{state},#{ordersn})
+	</insert>
+	
+	<select id="getListByProdId" parameterType="java.lang.String" resultType="com.youxianji.pojo.ProdEvaluate">
+	     select 
+	        * 
+	     from prodevaluate where prodid=#{0}
+	     and state='1' order by createtime desc
+	</select>
+	
+	<select id="validateEvaluate" parameterType="java.util.Map" resultType="com.youxianji.pojo.ProdEvaluate">
+	     select 
+	        * 
+	     from prodevaluate where prodid=#{prodId} and userid=#{userId} and ordersn = #{orderSn}
+	</select>
+	
+</mapper>

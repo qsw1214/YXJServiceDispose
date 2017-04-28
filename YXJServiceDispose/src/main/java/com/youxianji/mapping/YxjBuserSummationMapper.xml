@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IYxjBuserWithdrawcashSummationDAO">
+
+ <resultMap id="SummationResultMap" type="com.youxianji.pojo.YxjBuserWithdrawcashSummation" >
+	    <id column="summation_userid" property="summationUserid" jdbcType="VARCHAR" />
+    	<result column="total_cash" property="totalCash" jdbcType="DECIMAL" />
+    	<result column="frozen_amount" property="frozenAmount" jdbcType="DECIMAL" />
+    	<result column="version" property="version" jdbcType="INTEGER" />
+ </resultMap>
+  	
+  	 <sql id="Base_Column_List" >
+        s.summation_userid,s.total_cash,s.frozen_amount,s.version 
+	 </sql>
+	 
+	 <insert id="insertSummation" parameterType="com.youxianji.pojo.YxjBuserWithdrawcashSummation">
+	     insert into yxj_buser_withdrawcash_summation(summation_userid,frozen_amount,version)  
+	        values(#{summationUserid},#{frozenAmount},#{version})
+	</insert>
+	
+	<update id="updateSummation" parameterType="com.youxianji.pojo.YxjBuserWithdrawcashSummation">
+           UPDATE yxj_buser_withdrawcash_summation 
+            set  frozen_amount=#{frozenAmount}, version=#{version} + 1  
+            WHERE summation_userid=#{summationUserid} and version=#{version}
+    </update>
+    
+	<select id="getSummations" parameterType="java.lang.String" resultMap="SummationResultMap">
+         select  
+             <include refid="Base_Column_List"></include> 
+            from yxj_buser_withdrawcash_summation s  
+          where 
+          	s.summation_userid = #{0} 
+   </select>
+</mapper>

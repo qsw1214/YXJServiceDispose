@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IAfternoonteaDAO">
+	
+	<insert id="insert" parameterType="com.youxianji.pojo.Afternoontea">
+	     insert into afternoontea(id,telephone,companyname,employquantity,contractpeople,position,createTime) 
+	        values(#{id},#{telephone},#{companyname},#{employquantity},#{contractpeople},#{position},SYSDATE())
+	</insert>
+	
+	<select id="findByInvitecode" parameterType="java.lang.String" resultType="com.youxianji.pojo.Afternoontea">
+	     select * from afternoontea where invitecode=#{0}
+	</select>
+</mapper>

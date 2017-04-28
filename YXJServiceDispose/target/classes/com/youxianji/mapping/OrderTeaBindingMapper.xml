@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IOrderTeaBindingDAO">
+	
+	<insert id="insert" parameterType="java.lang.String">
+	     insert into orderteabinding(id,ordersn,afternoonteaid) 
+	        values(#{0},#{1},#{2})
+	</insert>
+
+</mapper>

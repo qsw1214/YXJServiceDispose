@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IYxjUserProdevaluateReplyDAO" >
+	
+	<resultMap id="valuateReplyResultMap" type="com.youxianji.pojo.YxjUserProdevaluateReply" >
+   		<id column="reply_id" property="replyId" jdbcType="VARCHAR" />
+    	<result column="reply_name" property="replyName" jdbcType="VARCHAR" />
+   		<result column="reply_auserid" property="replyAuserid" jdbcType="VARCHAR" />
+    	<result column="reply_time" property="replyTime"/>
+    	<result column="reply_content" property="replyContent" jdbcType="VARCHAR" />
+    	<result column="reply_state" property="replyState" jdbcType="CHAR" />
+    	
+    	<association column="evaluate_id" property="comment" resultMap="commentResultMap"></association>
+   </resultMap>
+   
+   <resultMap id="commentResultMap" type="com.youxianji.pojo.ProdEvaluate" >
+	    <id column="id" property="id" jdbcType="VARCHAR" />
+	</resultMap> 
+	 
+   	<sql id="Base_Column_List" >
+   	  re.reply_id,re.reply_name,re.reply_auserid,re.reply_time,re.reply_content,re.reply_state
+    </sql>
+  
+    <select id="getValuateReplys" parameterType="java.lang.String" resultMap="valuateReplyResultMap">
+         SELECT 
+         	<include refid="Base_Column_List"></include>,p.id   
+          FROM yxj_user_prodevaluate_reply re 
+          JOIN prodevaluate p   
+          ON p.id = re.evaluate_id   
+          WHERE re.evaluate_id=#{0} and re.reply_state='1'
+    </select>
+  	
+
+</mapper>

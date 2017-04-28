@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IProdCollectionsDAO" >
+	
+	<resultMap id="ProdCollectionsResultMap" type="com.youxianji.pojo.ProdCollections" >
+    	<id column="collectionid" property="collectionid" jdbcType="VARCHAR" />
+   		<result column="userid" property="userid" jdbcType="VARCHAR" />
+    	<result column="prodid" property="prodid" jdbcType="VARCHAR" />
+   		<result column="remark" property="remark" jdbcType="VARCHAR" />    
+	    
+  	</resultMap>
+  	
+  	
+
+</mapper>

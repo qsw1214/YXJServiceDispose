@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IMemberCardInfoDAO" >
+	
+	<resultMap id="MemberCardInfoResultMap" type="com.youxianji.pojo.MemberCardInfo" >
+  	  <id column="cardid" property="cardid" jdbcType="VARCHAR" />
+    	<result column="cardvalue" property="cardvalue" jdbcType="INTEGER" />
+    	<result column="sellprice" property="sellprice" jdbcType="INTEGER" />
+    	<result column="chargeamount" property="chargeamount" jdbcType="INTEGER" />
+    	<result column="remark" property="remark" jdbcType="VARCHAR" />	
+    	<result column="carddesc" property="carddesc" jdbcType="VARCHAR" />	
+    	<result column="state" property="state" jdbcType="CHAR" />		
+  	</resultMap>
+  	
+	<select id="findAll" resultType="com.youxianji.pojo.MemberCardInfo" >
+	     select * from youxianjifresh.membercardinfo where state='1'
+	     order by sellprice asc
+	</select>
+	
+	<select id="findMemberCardInfoById" parameterType="java.lang.String" resultType="com.youxianji.pojo.MemberCardInfo" >
+	     select * from membercardinfo where cardid=#{0}
+	</select>
+  	
+  	<select id="findByCardType" parameterType="java.lang.String" resultType="com.youxianji.pojo.MemberCardInfo" >
+	     select * from youxianjifresh.membercardinfo where state='1' and cardtype=#{0}
+	     order by sellprice asc
+	</select>
+  	
+
+</mapper>

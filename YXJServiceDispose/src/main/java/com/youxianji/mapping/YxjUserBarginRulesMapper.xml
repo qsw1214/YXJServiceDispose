@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IYxjUserBarginRulesDAO" >
+  <resultMap id="BaseResultMap" type="com.youxianji.pojo.YxjUserBarginRules" >
+    <id column="rules_id" property="id" jdbcType="VARCHAR" />
+    <result column="rules_prodid" property="prodid" jdbcType="VARCHAR" />
+    <result column="rules_money" property="rulesMoney" jdbcType="DECIMAL" />
+    <result column="lowest_money" property="lowestMoney" jdbcType="DECIMAL" />
+    <result column="rules_begintime" property="begintime" jdbcType="TIMESTAMP" />
+    <result column="rules_endtime" property="endtime" jdbcType="TIMESTAMP" />
+    <result column="rules_state" property="state" jdbcType="CHAR" />
+    <result column="rules_title" property="rulesTitle" jdbcType="VARCHAR" />
+    <result column="rules_desc" property="rulesDesc" jdbcType="VARCHAR" />
+    <result column="rules_imageurl" property="rulesImageurl" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from yxj_user_bargain_rules
+    where rules_id = #{rulesId,jdbcType=VARCHAR}
+  </delete>
+  <update id="updateByPrimaryKey" parameterType="com.youxianji.pojo.YxjUserBarginRules" >
+    update yxj_user_bargain_rules
+    set rules_prodid = #{rulesProdid,jdbcType=VARCHAR},
+      rules_money = #{rulesMoney,jdbcType=DECIMAL},
+      lowest_money = #{lowestMoney,jdbcType=DECIMAL},
+      rules_begintime = #{rulesBegintime,jdbcType=TIMESTAMP},
+      rules_endtime = #{rulesEndtime,jdbcType=TIMESTAMP},
+      rules_state = #{rulesState,jdbcType=CHAR}
+      rules_title = #{rulesTitle,jdbcType=VARCHAR}
+      rules_desc = #{rulesDesc,jdbcType=VARCHAR}
+      rules_imageurl = #{rulesImageurl,jdbcType=VARCHAR}
+    where rules_id = #{rulesId,jdbcType=VARCHAR}
+  </update>
+  <select id="findBargainRulesById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select rules_id, rules_prodid, rules_money,lowest_money,rules_begintime, rules_endtime, rules_state,rules_title,rules_desc,rules_imageurl
+    from yxj_user_bargain_rules
+    where rules_state='1' and rules_id = #{0}
+  </select>
+  <select id="getBargainRulesByDate" resultMap="BaseResultMap" >
+    SELECT rules_id, rules_prodid, rules_money,lowest_money,rules_begintime, rules_endtime, rules_state,rules_title,rules_desc,rules_imageurl
+    FROM yxj_user_bargain_rules
+    WHERE rules_state='1' 
+    AND rules_begintime <![CDATA[<]]> SYSDATE()
+    AND rules_endtime <![CDATA[>]]> SYSDATE()
+  </select>
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IGetProductByTagDao">
+	
+	<resultMap id="FreshmanProductResultMap" type="com.youxianji.pojo.FreshmanProduct" >
+	    <result column="prodname" property="prodname" jdbcType="VARCHAR" />
+	    <result column="prodUnit" property="prodUnit" jdbcType="VARCHAR" />
+	    <result column="freshmanprice" property="freshmanprice" jdbcType="DECIMAL" />
+	    <result column="imageUrl" property="imageUrl" jdbcType="VARCHAR" />
+	    <result column="preSellflag" property="preSellflag" jdbcType="CHAR" />
+	    <result column="isactivity" property="isactivity" jdbcType="CHAR" />
+	    <result column="preSellTime" property="preSellTime" jdbcType="VARCHAR" />
+	    <result column="limitquantity" property="limitquantity" jdbcType="INTEGER" />
+	    <result column="buytype" property="buytype" jdbcType="CHAR" />
+	    <result column="typeid" property="typeid" jdbcType="VARCHAR" />
+	    <result column="depth" property="depth" jdbcType="INTEGER" />
+	    <result column="typename" property="typename" jdbcType="VARCHAR" />
+  	</resultMap>
+
+	<select id="findProductByTag"  resultMap="FreshmanProductResultMap"  parameterType="java.lang.String" >
+		select pro.prodname,pro.prodUnit,pro.valueprice,ifnull(pro.freshmanprice,0) freshmanprice,pro.imageUrl,pro.preSellflag,
+				pro.preSellTime,ifnull(act.activityid,'') isactivity,ifnull(act.limitquantity,0) limitquantity,ifnull(act.buytype,'') buytype,pty.typeid,pty.depth,pty.typename      
+			from   
+				prodinfo pro  
+			left join  
+				ptrelation ption 
+			on 
+				ption.tagid = #{2} and ption.prodid =  pro.prodid  
+			left join    
+				activityprodinfo act     
+			on    
+				pro.prodid = act.prodid and pro.isfreshman = '1'    
+			join    
+				prodtype pty    
+			on    
+				pty.typeid = pro.typeid    
+			
+	</select>
+</mapper>

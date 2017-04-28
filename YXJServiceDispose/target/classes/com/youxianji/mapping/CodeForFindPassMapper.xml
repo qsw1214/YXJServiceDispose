@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.ICodeForFindPassDAO" >
+  	
+  	<sql id="Base_Column_List" >
+    	id, telephone, createTime, verifyCode, state
+  	</sql>
+  	<select id="getCodeForFindPass"  parameterType="java.util.List"  resultType="com.youxianji.pojo.CodeForFindPass">
+  		select 
+	    <include refid="Base_Column_List" />
+	    from Codeforfindpass
+	    where state='1' and telephone=#{0}
+	    	order by createTime
+  	</select>
+  	
+  	<update id="updataCodeForFindPass" >
+	   update Codeforfindpass
+	    set state = #{1}
+	    where id = #{0}
+    </update>
+    
+    <insert id="saveCodeForFindPass" >
+	    insert into Codeforfindpass (id, telephone, createTime, verifyCode, state)
+	    values (#{0}, #{1}, SYSDATE(),#{2},'1')
+  	</insert>
+
+</mapper>

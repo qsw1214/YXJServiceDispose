@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IDeliveryAddressDAO" >
+	
+	<resultMap id="DeliveryAddressResultMap" type="com.youxianji.pojo.DeliveryAddress" >
+    	<id column="daid" property="daid" jdbcType="VARCHAR" />
+    	<result column="userid" property="userid" jdbcType="VARCHAR" />
+    	<result column="telephone" property="telephone" jdbcType="VARCHAR" />
+    	<result column="receivename" property="receivename" jdbcType="VARCHAR" />
+    	<result column="buildingname" property="buildingname" jdbcType="VARCHAR" />
+    	<result column="receiveaddress" property="receiveaddress" jdbcType="VARCHAR" />
+   		 <result column="longitude" property="longitude" jdbcType="VARCHAR" />
+   		 <result column="latitude" property="latitude" jdbcType="VARCHAR" />
+   		 <result column="isdefault" property="isdefault" jdbcType="CHAR" />
+   		 <result column="state" property="state" jdbcType="CHAR" />
+   		 <result column="createtime" property="createtime" jdbcType="DATE" />	
+   		 <result column="province" property="province" jdbcType="VARCHAR" />
+   		 <result column="city" property="city" jdbcType="VARCHAR" />
+   		 <result column="district" property="district" jdbcType="VARCHAR" />	
+  	</resultMap>
+  	
+	<sql id="Address_Column_List" >
+    	daid, userid, telephone, receivename,buildingname,receiveaddress,longitude,latitude,isdefault,province,city,district
+  	</sql>
+    <select id="getAddressListByUserId" parameterType="java.lang.String" resultMap="DeliveryAddressResultMap">
+         SELECT 
+         	<include refid="Address_Column_List" />
+          FROM deliveryaddress WHERE userid=#{userid} and state='1' ORDER BY isdefault DESC,createtime DESC
+    </select>
+  	<insert id="insertAddress" parameterType="com.youxianji.pojo.DeliveryAddress">
+  	     insert into deliveryAddress(daid,userid,telephone,receivename,buildingname,receiveaddress,longitude,latitude,isdefault,state,createtime,province,city,district)
+  	         values(#{daid},#{userid},#{telephone},#{receivename},#{buildingname},#{receiveaddress},#{longitude},#{latitude},#{isdefault},#{state},#{createtime},#{province},#{city},#{district})
+  	</insert>
+  	<update id="deleteById" parameterType="java.lang.String">
+  	     update deliveryAddress set state='0' where daid=#{daid}
+  	</update>
+  	<update id="deleteByUserId" parameterType="java.lang.String">
+  	     update deliveryAddress set state='0' where userid=#{userid}
+  	</update>
+  	<select id="getAddressById" parameterType="java.lang.String" resultMap="DeliveryAddressResultMap">
+  	     SELECT <include refid="Address_Column_List" />
+          FROM deliveryaddress WHERE daid=#{daid} and state='1'
+  	</select>
+  	<update id="updateAddress" parameterType="com.youxianji.pojo.DeliveryAddress" >
+	    update deliveryAddress
+	    <set>
+	      <if test="telephone != null" >
+	        telephone = #{telephone,jdbcType=VARCHAR},
+	      </if>
+	      <if test="receivename != null" >
+	        receivename = #{receivename,jdbcType=VARCHAR},
+	      </if>
+	      <if test="buildingname != null" >
+	        buildingname = #{buildingname,jdbcType=VARCHAR},
+	      </if>
+	      <if test="receiveaddress != null" >
+	        receiveaddress = #{receiveaddress,jdbcType=VARCHAR},
+	      </if>
+	      <if test="longitude != null" >
+	        longitude = #{longitude,jdbcType=VARCHAR},
+	      </if>
+	      <if test="latitude != null" >
+	        latitude = #{latitude,jdbcType=VARCHAR},
+	      </if>
+	      <if test="isdefault != null" >
+	        isdefault = #{isdefault,jdbcType=VARCHAR},
+	      </if>
+	      <if test="createtime != null" >
+	        createtime = #{createtime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="province != null" >
+	        province = #{province,jdbcType=VARCHAR},
+	      </if>
+	      <if test="city != null" >
+	        city = #{city,jdbcType=VARCHAR},
+	      </if>
+	      <if test="district != null" >
+	        district = #{district,jdbcType=VARCHAR},
+	      </if>
+	    </set>
+	    where daid=#{daid} 
+  	</update>
+  	
+  	<update id="updateDefaultAddress" parameterType="java.lang.String" >
+	    update deliveryAddress set isdefault = #{0} where daid=#{1} 
+  	</update>
+  
+  	
+  	<select id="getDefaultById" parameterType="java.lang.String" resultMap="DeliveryAddressResultMap">
+  	     SELECT <include refid="Address_Column_List" />
+          FROM deliveryaddress WHERE daid!=#{0} and state='1' and isdefault='1' and userid=#{1}
+  	</select>
+  	
+
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IYxjUserBarginInfoDAO" >
+  <resultMap id="BaseResultMap" type="com.youxianji.pojo.YxjUserBarginInfo" >
+    <id column="bargain_id" property="id" jdbcType="VARCHAR" />
+    <result column="bargain_rules_id" property="rulesId" jdbcType="VARCHAR" />
+    <result column="bargain_user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="bargain_total_money" property="totalMoney" jdbcType="DECIMAL" />
+    <result column="bargain_remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <insert id="insertBargainInfo"  parameterType="com.youxianji.pojo.YxjUserBarginInfo" >
+    insert into yxj_user_bargin_info (bargain_id,bargain_rules_id, bargain_user_id, 
+      bargain_total_money, bargain_remark,create_time)
+    values (#{id,jdbcType=VARCHAR},#{rulesId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{totalMoney,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateBargainInfo" parameterType="com.youxianji.pojo.YxjUserBarginInfo" >
+    update yxj_user_bargin_info
+    <set>
+     <if test='rulesId != null and rulesId != ""'>
+              bargain_rules_id = #{rulesId,jdbcType=VARCHAR},
+      </if>
+      <if test='userId != null and userId != ""'>
+             bargain_user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test='totalMoney != null '>
+            bargain_total_money = #{totalMoney,jdbcType=DECIMAL},
+      </if>
+    <if test='remark != null '>
+            bargain_remark = #{remark,jdbcType=VARCHAR},
+      </if>
+     <if test='createTime != null '>
+            create_time = #{createTime},
+      </if>
+      </set>
+    where bargain_id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select bargain_id, bargain_rules_id, bargain_user_id, bargain_total_money, bargain_remark,create_time
+    from yxj_user_bargin_info
+    where bargain_id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="findBargainInfoByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select bargain_id, bargain_rules_id, bargain_user_id, bargain_total_money, bargain_remark,create_time
+    from yxj_user_bargin_info
+    where bargain_rules_id=#{0} and bargain_user_id=#{1}
+  </select>
+  <select id="findBargainInfoById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select bargain_id, bargain_rules_id, bargain_user_id, bargain_total_money, bargain_remark,create_time
+    from yxj_user_bargin_info
+    where bargain_id=#{0}
+  </select>
+</mapper>

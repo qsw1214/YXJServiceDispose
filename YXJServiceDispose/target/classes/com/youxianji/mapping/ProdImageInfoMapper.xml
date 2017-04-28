@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IProdImageInfoDAO" >
+	
+	<resultMap id="ProdImageInfoResultMap" type="com.youxianji.pojo.ProdImageInfo" >
+	    <id column="prodImageId" property="prodImageId" jdbcType="VARCHAR" />
+    	<result column="prodImageUrl" property="prodImageUrl" jdbcType="VARCHAR" />
+    	<association property="prodInfo" column="prodInfo" resultMap="ProdResultMap"></association>
+    	
+  	</resultMap>
+  	 <resultMap id="ProdResultMap" type="com.youxianji.pojo.ProdInfo" >
+	    <id column="prodid" property="prodid" jdbcType="VARCHAR" />
+	 </resultMap>   
+  	
+  	 <sql id="Base_Column_List" >
+         pd.prodImageId,pd.prodImageUrl,pd.prodid as prodid
+	 </sql>
+	   	  
+	 <select id="getById" resultMap="ProdImageInfoResultMap" parameterType="java.lang.String">
+	  	SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			ProdImageInfo pd 
+		WHERE pd.prodImageId=#{0}
+	 </select>
+	 
+	 <select id="getProdImageInfoList" resultMap="ProdImageInfoResultMap" parameterType="java.lang.String">
+	  	SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			ProdImageInfo pd 
+		WHERE pd.prodid=#{0}
+	 </select>
+	 
+	 
+	 
+  	
+</mapper>

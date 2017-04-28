@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IDeliveryFeeRulesDAO" >
+	
+	<resultMap id="DeliveryFeeRulesResultMap" type="com.youxianji.pojo.DeliveryFeeRules" >
+		    <id column="id" property="id" jdbcType="VARCHAR" />
+    		<result column="sinceprice" property="sinceprice" jdbcType="DECIMAL" />
+    		<result column="deliverfee" property="deliverfee" jdbcType="DECIMAL" />
+    		<result column="limitweight" property="limitweight" jdbcType="DECIMAL" />
+    		<association column="buserid" property="businessUser" resultMap="BusinessUserInfoResultMap"/>
+  	</resultMap>
+  	
+  	<resultMap id="BusinessUserInfoResultMap" type="com.youxianji.pojo.BusinessUserInfo" >
+		    <id column="buserid" property="buserid" jdbcType="VARCHAR" />
+  	</resultMap>
+  
+  	<sql id="Base_Column_List" >
+         d.id,d.sinceprice,d.deliverfee,d.buserid,d.limitweight
+	</sql>
+	
+	<select id="getListByBuserId" resultMap="DeliveryFeeRulesResultMap" parameterType="java.lang.String">
+	  	SELECT
+			<include refid="Base_Column_List"></include>
+		FROM DeliveryFeeRules d
+	    ORDER BY d.sinceprice desc
+	</select>
+	
+	
+</mapper>

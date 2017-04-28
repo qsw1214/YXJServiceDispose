@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.youxianji.dao.IWeChatUserInfoDAO" >
+	
+	<resultMap id="WeChatUserInfoResultMap" type="com.youxianji.pojo.WeChatUserInfo" >
+	    <id column="wetchid" property="wetchid" jdbcType="VARCHAR" />
+    	<result column="openid" property="openid" jdbcType="VARCHAR" />
+    	<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+   		<result column="sex" property="sex" jdbcType="INTEGER" />
+   		<result column="city" property="city" jdbcType="VARCHAR" />
+   		<result column="country" property="country" jdbcType="VARCHAR" />
+   		<result column="province" property="province" jdbcType="VARCHAR" />
+    	<result column="language" property="language" jdbcType="VARCHAR" />
+   		<result column="headimgurl" property="headimgurl" jdbcType="VARCHAR" />
+    	<result column="subscribetime" property="subscribetime" jdbcType="TIMESTAMP" />
+    	<result column="isbunding" property="isbunding" jdbcType="CHAR" />
+    	<result column="isunsubscribe" property="isunsubscribe" jdbcType="CHAR" />
+    	<result column="unsubscribetime" property="unsubscribetime" jdbcType="TIMESTAMP" />
+    	<association column="userid" property="user" resultMap="UserInfoResultMap"></association>
+  </resultMap>
+  <resultMap id="UserInfoResultMap" type="com.youxianji.pojo.UserInfo" >
+	    <id column="userId" property="userId" jdbcType="VARCHAR" />
+	    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+   	</resultMap>
+  
+  <sql id="Base_Column_List" >
+      wx.openid,wx.nickname,wx.sex,wx.city,wx.country,wx.province,
+      wx.language,wx.headimgurl,wx.subscribetime,wx.isbunding,wx.isunsubscribe,
+      wx.unsubscribetime,u.userId,u.telephone
+  </sql>
+  
+  <select id="getWeChatUserInfoByUserId" parameterType="java.lang.String" resultMap="WeChatUserInfoResultMap">
+         SELECT 
+         	<include refid="Base_Column_List" />
+          FROM WeChatUserInfo wx
+          inner join userInfo u on u.userid=wx.userid
+          
+          WHERE wx.userid=#{0}
+  </select>	
+  
+  <select id="getByOpenId" parameterType="java.lang.String" resultMap="WeChatUserInfoResultMap">
+  		  select 
+  		    <include refid="Base_Column_List" />
+  		  from wechatuserinfo wx
+  		  left join userInfo u on u.userid=wx.userid
+  		  where wx.openid = #{0}
+  </select>
+  
+  <update id="update" parameterType="java.lang.String" >
+        update wechatuserinfo set userid=#{1} where openid=#{0}
+  </update>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
